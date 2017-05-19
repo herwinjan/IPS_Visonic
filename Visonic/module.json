@@ -1,0 +1,10 @@
+{
+    "Id" :  "{DB92D4A5-B67B-4790-93FD-702973AEB76F}" ,
+    "name" :  "Visonic" ,
+    "type" :  3 ,
+    "vendor" :  "" ,
+    "parentRequirements" :  [ ] ,
+    "childRequirements" :  [ ] ,
+    "implemented" :  [ ] ,
+    "prefix" : "VS"
+}
