@@ -210,7 +210,7 @@ class VisonicGateway extends IPSModule {
              Debug::debug ( "Sending: " . $buffer ["desc"] );
              //$this->writeData ( $buf, strlen ( $buf ) );
 
-             $c=$this->SendDataToParent(json_encode(Array("DataID"=>"{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}","Buffer"=>$buf)));
+             $c=$this->SendDataToParent(json_encode(Array("DataID"=>"{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}","Buffer"=>utf8_encode($buf))));
              Debug::debug ( "Send done, wait and read-----------" );
              //usleep ( 1000 );
            /*  $timeout = 0.;
@@ -454,7 +454,7 @@ class VisonicGateway extends IPSModule {
              Debug::debug ( "Write packet: $desc" );
 
 
-             $c=$this->SendDataToParent(json_encode(Array("DataID"=>"{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}","Buffer"=>$buf)));
+             $c=$this->SendDataToParent(json_encode(Array("DataID"=>"{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}","Buffer"=>utf8_encode($buf))));
 
              //$c = $this->writeData ( $buf, strlen ( $buf ) );
         }
