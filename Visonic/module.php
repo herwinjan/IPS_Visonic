@@ -1,4 +1,5 @@
-<?
+<?php
+
     //
     class VisonicGateway extends IPSModule {
 
@@ -33,13 +34,13 @@
 
         }
 
-        / **
+        /**
         * The following functions are automatically available when the module has been inserted via the "Module Control".
         * The functions, with the self-defined prefix, are provided in PHP and JSON-RPC as follows:
         *
         * ABC_MyFirstElement ($ id);
         *
-        * /
+        */
         Public function setStatus($status)  {
             // Self-definedCode
         }
