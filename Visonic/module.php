@@ -61,7 +61,7 @@ class VisonicGateway extends IPSModule {
        // Do not delete this line
        parent::ApplyChanges();
        $this->init();
-      $this->RegisterTimerNow('sendAck', $this->keepalive*1000,  'MQTT_TimerEvent('.$this->InstanceID.');');
+      $this->RegisterTimerNow('sendAck', $this->keepalive*1000,  'VISONIC_TimerEvent('.$this->InstanceID.');');
 
 
    }
