@@ -35,6 +35,7 @@ class VisonicGateway extends IPSModule {
     var $StatusStateTxt="";
     var $event;
     var $currentState;
+    var $keepalive = 15;
 
 
 
@@ -53,6 +54,7 @@ class VisonicGateway extends IPSModule {
        parent::Create();
 
        $this->init();
+       $this->RegisterTimerNow('sendAck', $this->keepalive*1000,  'MQTT_TimerEvent('.$this->InstanceID.');');
 
    }
 
@@ -83,6 +85,13 @@ class VisonicGateway extends IPSModule {
 
    }
 
+   public function TimerEvent() {
+        Debug::debug("Timer event send Ack");  // Debug Fenster            // Selbsterstellter Code
+        $this->sendAck ();
+        $this->checkPacket();
+   }
+
+
    /**
    * The following functions are automatically available when the module has been inserted via the "Module Control".
    * The functions, with the self-defined prefix, are provided in PHP and JSON-RPC as follows:
@@ -90,7 +99,7 @@ class VisonicGateway extends IPSModule {
    * ABC_MyFirstElement ($ id);
    *
    */
-   Public function setStatus($status)  {
+   public function setStatus($status)  {
        // Self-definedCode
        IPS_LogMessage("Visonic", "Set Status to $status");
    }
