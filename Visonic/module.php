@@ -53,8 +53,6 @@ class VisonicGateway extends IPSModule {
        // Do not delete this row.
        parent::Create();
 
-       $this->init();
-       $this->RegisterTimerNow('sendAck', $this->keepalive*1000,  'MQTT_TimerEvent('.$this->InstanceID.');');
 
    }
 
@@ -62,6 +60,8 @@ class VisonicGateway extends IPSModule {
    public function ApplyChanges( )  {
        // Do not delete this line
        parent::ApplyChanges();
+       $this->init();
+      $this->RegisterTimerNow('sendAck', $this->keepalive*1000,  'MQTT_TimerEvent('.$this->InstanceID.');');
 
 
    }
