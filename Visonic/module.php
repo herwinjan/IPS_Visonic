@@ -61,6 +61,7 @@ class VisonicGateway extends IPSModule {
    public function ApplyChanges( )  {
        // Do not delete this line
        parent::ApplyChanges();
+       $this->RequireParent("{6179ED6A-FC31-413C-BB8E-1204150CF376}");
        $this->RegisterMessage(0, 100 );
        $this->init();
       $this->RegisterTimerNow('sendAck', $this->keepalive*1000,  'VISONIC_TimerEvent('.$this->InstanceID.');');
