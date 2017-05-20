@@ -52,7 +52,7 @@ class VisonicGateway extends IPSModule {
    public function Create( )  {
        // Do not delete this row.
        parent::Create();
-       $this->RegisterMessage(0, self::IPS_KERNELMESSAGE );
+       $this->RegisterMessage(0, 100 );
 
 
    }
@@ -61,7 +61,7 @@ class VisonicGateway extends IPSModule {
    public function ApplyChanges( )  {
        // Do not delete this line
        parent::ApplyChanges();
-       $this->RegisterMessage(0, self::IPS_KERNELMESSAGE );
+       $this->RegisterMessage(0, 100 );
        $this->init();
       $this->RegisterTimerNow('sendAck', $this->keepalive*1000,  'VISONIC_TimerEvent('.$this->InstanceID.');');
 
@@ -125,7 +125,7 @@ class VisonicGateway extends IPSModule {
                 break;
         }
 
-   }  
+   }
 
    public function ReceiveData($JSONString)
    {
