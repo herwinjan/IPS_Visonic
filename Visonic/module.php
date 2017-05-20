@@ -5,7 +5,7 @@
 
         // The constructor of the module
         // Overrides the default constructor of IPS
-        public  function __construct( $InstanceID )  {
+        public function __construct( $InstanceID )  {
             // Do not delete this row
             parent::__construct ( $InstanceID ) ;
 
@@ -13,14 +13,14 @@
         }
 
         // Overrides the internal IPS_Create ($ id) function
-        public  function Create ( )  {
+        public function Create ( )  {
             // Do not delete this row.
             parent::Create ( ) ;
 
         }
 
         // Overrides the intere IPS_ApplyChanges ($ id) function
-        public  function ApplyChanges ( )  {
+        public function ApplyChanges ( )  {
             // Do not delete this line
             parent::ApplyChanges ( ) ;
         }
