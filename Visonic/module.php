@@ -22,6 +22,8 @@ class VisonicGateway extends IPSModule {
    public function ApplyChanges( )  {
        // Do not delete this line
        parent::ApplyChanges();
+
+       $this->RequireParent("{6179ED6A-FC31-413C-BB8E-1204150CF376}");
    }
 
 
@@ -36,6 +38,7 @@ class VisonicGateway extends IPSModule {
           parent::ForwardData($JSONString);
           $data = json_decode($JSONString);
 	     IPS_LogMessage("Visonic FRWD", utf8_decode($data->Buffer));
+          return "String data for the device instance!";
 
    }
 
