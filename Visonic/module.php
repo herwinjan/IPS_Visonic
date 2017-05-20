@@ -4,9 +4,9 @@
 
         // The constructor of the module
         // Overrides the default constructor of IPS
-        public  function __construct ( $ InstanceID )  {
+        public  function __construct( $InstanceID )  {
             // Do not delete this row
-            parent::__construct ( $ InstanceID ) ;
+            parent::__construct ( $InstanceID ) ;
 
             // Self-service code
         }
