@@ -52,6 +52,7 @@ class VisonicGateway extends IPSModule {
    public function Create( )  {
        // Do not delete this row.
        parent::Create();
+       $this->RegisterMessage(0, self::IPS_KERNELMESSAGE );
 
 
    }
@@ -60,12 +61,71 @@ class VisonicGateway extends IPSModule {
    public function ApplyChanges( )  {
        // Do not delete this line
        parent::ApplyChanges();
+       $this->RegisterMessage(0, self::IPS_KERNELMESSAGE );
        $this->init();
       $this->RegisterTimerNow('sendAck', $this->keepalive*1000,  'VISONIC_TimerEvent('.$this->InstanceID.');');
 
 
    }
 
+
+   public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
+//            $this->debug(__FUNCTION__,"entered");
+        $id=$SenderID;
+        Debug::debug("TS: $TimeStamp SenderID ".$SenderID." with MessageID ".$Message." Data: ".print_r($Data, true));
+        switch ($Message) {
+            case self::VM_UPDATE:
+                $this->Publish($id,$Data);
+                break;
+            case self::VM_DELETE:
+                $this->UnSubscribe($id);
+                break;
+            case self::IM_CHANGESTATUS:
+                switch ($Data[0]) {
+                    case self::ST_AKTIV:
+                        $this->debug(__CLASS__,__FUNCTION__."I/O Modul > Aktiviert");
+                       // $this->MQTTDisconnect();
+                        break;
+                    case self::ST_INACTIV:
+                        $this->debug(__CLASS__,__FUNCTION__."I/O Modul > Deaktiviert");
+                        //$this->MQTTDisconnect();
+                        break;
+                    case self::ST_ERROR_0:
+                        $this->debug(__CLASS__,__FUNCTION__."I/O Modul > Fehler");
+                        //$this->MQTTDisconnect();
+                        break;
+                    default:
+                        IPS_LogMessage(__CLASS__,__FUNCTION__."I/O Modul unbekantes Ereignis ".$Data[0]);
+                        break;
+                }
+                break;
+            case self::IPS_KERNELMESSAGE:
+                $kmsg=$Data[0];
+                switch ($kmsg) {
+                    case self::KR_READY:
+                        IPS_LogMessage(__CLASS__,__FUNCTION__." KR_Ready ->reconect");
+                        //$this->MQTTDisconnect();
+                        break;
+/*
+                    case self::KR_UNINIT:
+                        // not working :(
+                        $msgid=$this->GetBuffer("MsgID");
+                        IPS_SetProperty($this->InstanceID,'MsgID',(Integer)$msgid);
+                        IPS_ApplyChanges($this->InstanceID);
+                        IPS_LogMessage(__CLASS__,__FUNCTION__." KR_UNINIT ->disconnect()");
+                        break;  */
+
+                    default:
+                        IPS_LogMessage(__CLASS__,__FUNCTION__." Kernelmessage unhahndled, ID".$kmsg);
+                        break;
+                }
+                break;
+            default:
+                IPS_LogMessage(__CLASS__,__FUNCTION__." Unknown Message $Message");
+                break;
+        }
+
+   }  
 
    public function ReceiveData($JSONString)
    {
@@ -104,7 +164,7 @@ class VisonicGateway extends IPSModule {
        IPS_LogMessage("Visonic", "Set Status to $status");
    }
 
-   function addToQueue($packet, $desc)
+   private function addToQueue($packet, $desc)
    {
 
         $a = array ();
@@ -113,7 +173,7 @@ class VisonicGateway extends IPSModule {
         $this->queue [] = $a;
    }
 
-   function getFromQueue()
+   private function getFromQueue()
    {
 
         return array_shift ( $this->queue );
@@ -133,7 +193,7 @@ class VisonicGateway extends IPSModule {
         $this->statusTxt="Connected";
 
    }
-   function findPostamble()
+   private function findPostamble()
    {
 
         $ll = strlen ( $this->store );
@@ -147,7 +207,7 @@ class VisonicGateway extends IPSModule {
         return - 1;
    }
 
-   function parseData()
+   private function parseData()
    {
 
         Debug::debug ( "Start Parse -----------==========" );
@@ -205,7 +265,7 @@ class VisonicGateway extends IPSModule {
         Debug::debug ( "done parse -----------==========" );
    }
 
-   function checkPacket()
+   private function checkPacket()
    {
 
         //$this->readData ();
@@ -240,7 +300,7 @@ class VisonicGateway extends IPSModule {
 
         }
    }
-   function parsePacket($str)
+   private function parsePacket($str)
    { //1 9 0
 
 
@@ -447,7 +507,7 @@ class VisonicGateway extends IPSModule {
 
    }
 
-   function sendFunction($send, $len, $desc = "", $direct = true)
+   private function sendFunction($send, $len, $desc = "", $direct = true)
    {
 
         $plen = $len + 2;
@@ -471,7 +531,7 @@ class VisonicGateway extends IPSModule {
         return 1;
    }
 
-   function checksum($buf, $len)
+   private function checksum($buf, $len)
    {
 
         $checksum = 0;
@@ -487,7 +547,7 @@ class VisonicGateway extends IPSModule {
         return chr ( $checksum );
    }
 
-   function sendAck()
+   private function sendAck()
    {
 
         $buf = "\x02\x43";
@@ -497,7 +557,7 @@ class VisonicGateway extends IPSModule {
 
    } //0d 02 43 ba 0a
 
-   function getStatus()
+   private function getStatus()
    {
 
       $stat = array(
@@ -511,7 +571,7 @@ class VisonicGateway extends IPSModule {
 
    }
 
-   function detectTamper($zone, $power)
+   private function detectTamper($zone, $power)
    {
 
         $zones = 0;
@@ -558,7 +618,7 @@ class VisonicGateway extends IPSModule {
         }
    }
 
-   function detectStatus($zone, $power)
+   private function detectStatus($zone, $power)
    {
 
         $zones = 0;
@@ -609,8 +669,7 @@ class VisonicGateway extends IPSModule {
    }
 
 
-   function sendDownload($type)
-
+   private function sendDownload($type)
    {
 
         $str="";
@@ -659,7 +718,7 @@ class VisonicGateway extends IPSModule {
 
         $this->sendFunction ( $buf, 11, "send download $type" );
    }
-   function sendStart()
+   private function sendStart()
    {
         //MSG_START
         Debug::debug ( "send start" );
@@ -672,7 +731,7 @@ class VisonicGateway extends IPSModule {
         $this->sendFunction ( $buf, 1, "send start" );
    }
 
-   function sendExitDownload()
+   private function sendExitDownload()
    {
 
         Debug::debug ( "send exit download" );
@@ -681,7 +740,7 @@ class VisonicGateway extends IPSModule {
         $this->sendFunction ( $buf, 1, "send exit download" );
    }
 
-   function sendPinInitTimer()
+   private function sendPinInitTimer()
    {
         $this->sendRestore();
         //NEW
@@ -692,7 +751,7 @@ class VisonicGateway extends IPSModule {
         $this->sendDateAndTime();
         Debug::debug ( "-=-=-=-=--=-=-=--==--==-=-=-=-=-=-=-" );
    }
-   function sendPinInit()
+   private function sendPinInit()
    {
 
         Debug::debug ( "send pin init" );
@@ -715,7 +774,7 @@ class VisonicGateway extends IPSModule {
         $this->sendFunction ( $buf, 12, "send Pin Init" );
    }
 
-   function sendDateAndTime()
+   private function sendDateAndTime()
    {
 
         Debug::debug ( "send Date and Time" );
@@ -736,7 +795,7 @@ class VisonicGateway extends IPSModule {
         $this->sendFunction ( $buf, 11, "send Date and Time" );
    }
 
-   function sendStatusUpdate()
+   private function sendStatusUpdate()
    {
 
         Debug::debug ( "send request status update" );
@@ -757,7 +816,7 @@ class VisonicGateway extends IPSModule {
 
         $this->sendFunction ( $buf, 12, "send request status update" );
    }
-   function sendRestore()
+   private function sendRestore()
    {
    //string.char(0xAB, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x43)
         Debug::debug ( "send request status update" );
@@ -778,31 +837,31 @@ class VisonicGateway extends IPSModule {
 
         $this->sendFunction ( $buf, 12, "send restore" );
    }
-   function armAway()
+   private function armAway()
    {
 
         $this->sendArmDisarm ( 0x05 );
    }
 
-   function armHome()
+   private function armHome()
    {
 
         $this->sendArmDisarm ( 0x04 );
    }
 
-   function armHomeNow()
+   private function armHomeNow()
    {
 
         $this->sendArmDisarm ( 0x14 );
    }
 
-   function disarm()
+   private function disarm()
    {
 
         $this->sendArmDisarm ( 0x00 );
    }
 
-   function sendArmDisarm($i)
+   private function sendArmDisarm($i)
    {
 
         Debug::debug ( "send Arm Disarm $i" );
@@ -832,7 +891,7 @@ class VisonicGateway extends IPSModule {
         $this->sendFunction ( $buf, 12, "send Arm Disarm $i" );
    }
 
-   function sendGetCapabilities($node)
+   private function sendGetCapabilities($node)
    {
 
         Debug::debug ( "send Get Capalibities for $node" );
