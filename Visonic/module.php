@@ -842,7 +842,41 @@ class VisonicGateway extends IPSModule {
         $this->sendFunction ( $buf, 2, REQUEST, 0, "send Get Capalibities for $node" );
    }
 
-
+   protected function RegisterTimerNow($Ident, $Milliseconds, $Action) {
+               //search for already available scripts with proper ident
+               $eid = @IPS_GetObjectIDByIdent($Ident, $this->InstanceID);
+               //properly update eventID
+               if($eid === false) {
+                       $eid = 0;
+               } else if(IPS_GetEvent($eid)['EventType'] <> 1) {
+                       IPS_DeleteEvent($eid);
+                       $eid = 0;
+               }
+               //we need to create one
+               if ($eid == 0) {
+                       $eid = IPS_CreateEvent(1);
+                       IPS_SetParent($eid, $this->InstanceID);
+                       IPS_SetIdent($eid, $Ident);
+                       IPS_SetName($eid, $Ident);
+                       IPS_SetHidden($eid, true);
+                       IPS_SetEventScript($eid, $Action);
+               } else {
+                       if(IPS_GetEvent($eid)['EventScript'] != $Action) {
+                               IPS_SetEventScript($eid, $Action);
+                       }
+               }
+               if($Milliseconds > 0) {
+                       $now = time();
+                       $Hour = date("H",$now);
+                       $Minute = date("i",$now);
+                       $Second = date("s",$now);
+                       IPS_SetEventCyclicTimeFrom($eid, $Hour, $Minute, $Second);
+                       IPS_SetEventCyclic($eid, 0, 0, 0, 0, 1, round($Milliseconds/1000));
+                       IPS_SetEventActive($eid, true);
+               } else {
+                       IPS_SetEventActive($eid, false);
+               }
+       }
 
 }
 ?>
