@@ -1,6 +1,6 @@
 <?
     //
-    class IPS_Visonic extends IPSModule {
+    class VisonicGateway extends IPSModule {
 
         // The constructor of the module
         // Overrides the default constructor of IPS
