@@ -1,7 +1,7 @@
 {
-    "Id" :  "{DB92D4A5-B67B-4790-93FD-702973AEB76F}" ,
+    "id" :  "{DB92D4A5-B67B-4790-93FD-702973AEB76F}" ,
     "name" :  "VisonicGateway" ,
-    "type" :  2 ,
+    "type" :  2,
     "vendor" :  "HJ Steehouwer" ,
     "aliases": ["Visonic Gateway"],
     "parentRequirements" :  [ "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}" ] ,
