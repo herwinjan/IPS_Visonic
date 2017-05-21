@@ -26,10 +26,10 @@ class VisonicGateway extends IPSModule {
    public function ApplyChanges( )  {
        // Do not delete this line
        parent::ApplyChanges();
-      // $this->RequireParent("{6DC3D946-0D31-450F-A8C6-C42DB8D7D4F1}");
-     //  $this->ConnectParent("{6DC3D946-0D31-450F-A8C6-C42DB8D7D4F1}");
+       $this->RequireParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
+       $this->ConnectParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
        $this->RegisterMessage(0, 10100 );
-     
+
    }
 
 
