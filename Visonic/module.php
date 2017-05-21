@@ -66,7 +66,7 @@ trait InstanceStatus
 
 
 class VisonicGateway extends IPSModule {
-     use DebugHelper,
+     use 
         InstanceStatus;
 
 
