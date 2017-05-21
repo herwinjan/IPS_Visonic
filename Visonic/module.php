@@ -96,8 +96,6 @@ class VisonicGateway extends IPSModule {
         $data = json_decode($JSONString);
         IPS_LogMessage("Visonic RERV", utf8_decode($data->Buffer));
 
-        $this->store .= utf8_decode($data->Buffer);
-        $this->parseData ();
         //Parse and write values to our variables
 
    }
