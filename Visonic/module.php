@@ -209,12 +209,12 @@ class VisonicGateway extends IPSModule {
                    break;
                    case "zonestatus";
 
-                   if (isset($dt["data"]["id"]["status"]))
+                   if (isset($dt["status"]))
                    {
-                        IPS_LogMessage("Visonic DEBUG","Zone: ".$dt["data"]["id"]." status: ".$dt["data"]["id"]["status"]);
+                        IPS_LogMessage("Visonic DEBUG","Zone: ".$dt["id"]." status: ".$dt["status"]);
                    }
                    else
-                   IPS_LogMessage("Visonic DEBUG","Zone: Unknown action => ".$dt["data"]["id"]);
+                   IPS_LogMessage("Visonic DEBUG","Zone: Unknown action => ".$dt["id"]);
                    break;
                    default:
                     IPS_LogMessage("Visonic DEBUG","unknown action: ".utf8_decode($dt["data"]));
