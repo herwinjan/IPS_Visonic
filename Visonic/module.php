@@ -81,7 +81,7 @@ class VisonicGateway extends IPSModule {
      use
         InstanceStatus;
 
-
+        var $Parent;
         var $ParentID;
 
    // The constructor of the module
