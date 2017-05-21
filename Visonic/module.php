@@ -182,7 +182,7 @@ class VisonicGateway extends IPSModule {
    public function ReceiveData($JSONString)
    {
         $data = json_decode($JSONString);
-        IPS_LogMessage("Visonic RERV", utf8_decode($data->Buffer));
+       // IPS_LogMessage("Visonic RERV", utf8_decode($data->Buffer));
 
         $dt=json_decode($data->Buffer,true);
 
@@ -192,13 +192,13 @@ class VisonicGateway extends IPSModule {
              {
                   case "zones":
                     print_r($dt["data"]);
-                    IPS_LogMessage("Visonic DEBUG","got zones!".$dt["data"][1]);
+                    IPS_LogMessage("Visonic DEBUG","got zone ".$dt["data"][1]["name"]);
                     break;
                    case "ping":
                     IPS_LogMessage("Visonic DEBUG","got ping!");
                     break;
                    default:
-                    IPS_LogMessage("Visonic DEBUG","unknown action");
+                    IPS_LogMessage("Visonic DEBUG","unknown action: ".utf8_decode($dt["data"]));
              }
 
 
