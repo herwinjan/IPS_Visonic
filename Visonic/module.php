@@ -67,11 +67,11 @@ trait InstanceStatus
         return false;
     }
 }
-
 /**
  * WebsocketClient Klasse implementiert das Websocket Protokoll als HTTP-Client
  * Erweitert IPSModule.
  *
+ * @package VisonicGateway
  * @property int $Parent
  */
 class VisonicGateway extends IPSModule {
