@@ -18,13 +18,14 @@ class VisonicGateway extends IPSModule {
        parent::Create();
        $this->RegisterMessage(0, 10100 );
        $this->RegisterPropertyBoolean('Active', false);
-
+       IPS_LogMessage("Visonic DEBUG", "Create!");
 
    }
 
    // Overrides the intere IPS_ApplyChanges ($ id) function
    public function ApplyChanges( )  {
        // Do not delete this line
+       IPS_LogMessage("Visonic DEBUG", "Apply changes!");
        parent::ApplyChanges();
        $this->RequireParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
        $this->ConnectParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
@@ -36,7 +37,7 @@ class VisonicGateway extends IPSModule {
    public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
 //            $this->debug(__FUNCTION__,"entered");
         $id=$SenderID;
-        Debug::debug("TS: $TimeStamp SenderID ".$SenderID." with MessageID ".$Message." Data: ".print_r($Data, true));
+        IPS_LogMessage("Visonic DEBUG", "TS: $TimeStamp SenderID ".$SenderID." with MessageID ".$Message." Data: ".print_r($Data, true));
         switch ($Message) {
             case self::VM_UPDATE:
                 $this->Publish($id,$Data);
