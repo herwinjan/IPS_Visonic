@@ -197,6 +197,25 @@ class VisonicGateway extends IPSModule {
                    case "ping":
                     IPS_LogMessage("Visonic DEBUG","got ping!");
                     break;
+                   case "state";
+                   IPS_LogMessage("Visonic DEBUG","State ".$dt["data"]);
+                   break;
+                   case "zonestate";
+                   break;
+                   case "zoneType";
+                   break;
+                   case "flag";
+                   IPS_LogMessage("Visonic DEBUG","Flag ".$dt["data"]);
+                   break;
+                   case "zonestatus";
+
+                   if (isset($dt["data"]["id"]["status"]))
+                   {
+                        IPS_LogMessage("Visonic DEBUG","Zone: ".$dt["data"]["id"]." status: ".$dt["data"]["id"]["status"]);
+                   }
+                   else
+                   IPS_LogMessage("Visonic DEBUG","Zone: Unknown action => ".$dt["data"]["id"]);
+                   break;
                    default:
                     IPS_LogMessage("Visonic DEBUG","unknown action: ".utf8_decode($dt["data"]));
              }
