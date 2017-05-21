@@ -191,6 +191,7 @@ class VisonicGateway extends IPSModule {
              switch($dt["action"])
              {
                   case "zones":
+                    print_r($dt["data"]);
                     IPS_LogMessage("Visonic DEBUG","got zones!".$dt["data"][1]);
                     break;
                    case "ping":
