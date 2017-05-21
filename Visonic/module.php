@@ -97,6 +97,8 @@ class VisonicGateway extends IPSModule {
    public function Create( )  {
        // Do not delete this row.
        parent::Create();
+       $this->RequireParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
+       $this->ConnectParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
        $this->RegisterMessage(0, 10100 );
        $this->RegisterPropertyBoolean('Active', false);
        IPS_LogMessage("Visonic DEBUG", "Create!");
@@ -110,11 +112,10 @@ class VisonicGateway extends IPSModule {
        parent::ApplyChanges();
        $this->ParentID = $this->GetParentData();
        IPS_LogMessage("Visonic PID", $this->ParentID);
-       IPS_LogMessage("Visonic PID", IPS_GetProperty($this->ParentID, 'Status'));
+       IPS_LogMessage("Visonic PID", IPS_GetProperty($this->ParentID, 'Open'));
        $this->RegisterMessage($this->InstanceID, DM_CONNECT);
        $this->RegisterMessage($this->InstanceID, DM_DISCONNECT);
-       $this->RequireParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
-       $this->ConnectParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
+
        //$this->RegisterMessage(0, 10100 );
 
    }
