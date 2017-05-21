@@ -8,6 +8,9 @@ define('IPS_BASE', 10000);                             //Base Message
 define('IPS_DATAMESSAGE', IPS_BASE + 1100);             //Data Handler Message
 define('DM_CONNECT', IPS_DATAMESSAGE + 1);             //On Instance Connect
 define('DM_DISCONNECT', IPS_DATAMESSAGE + 2);          //On Instance Disconnect
+ define('IPS_INSTANCEMESSAGE', IPS_BASE + 500);         //Instance Manager Message
+define('IM_CHANGESTATUS', IPS_INSTANCEMESSAGE + 5);    //Status was Changed
+   define('IM_CHANGESETTINGS', IPS_INSTANCEMESSAGE + 6);  //Settings were Changed
 }
 
 
