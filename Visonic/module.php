@@ -10,6 +10,10 @@ define('DM_CONNECT', IPS_DATAMESSAGE + 1);             //On Instance Connect
 define('DM_DISCONNECT', IPS_DATAMESSAGE + 2);          //On Instance Disconnect
 }
 
+
+
+
+
 trait InstanceStatus
 {
     /**
@@ -64,7 +68,12 @@ trait InstanceStatus
     }
 }
 
-
+/**
+ * WebsocketClient Klasse implementiert das Websocket Protokoll als HTTP-Client
+ * Erweitert IPSModule.
+ *
+ * @property int $Parent
+ */
 class VisonicGateway extends IPSModule {
      use
         InstanceStatus;
