@@ -184,6 +184,23 @@ class VisonicGateway extends IPSModule {
         $data = json_decode($JSONString);
         IPS_LogMessage("Visonic RERV", utf8_decode($data->Buffer));
 
+        $dt=json_decode($data->Buffer);
+
+        if (isset($dt))
+        {
+             switch($dt["action"])
+             {
+                  case "zones":
+                    IPS_LogMessage("Visonic DEBUG","got zones!".$dt["data"][1]);
+                    break;
+                   default:
+                    IPS_LogMessage("Visonic DEBUG","unknown action");
+             }
+
+
+        }
+
+
         //Parse and write values to our variables
 
    }
