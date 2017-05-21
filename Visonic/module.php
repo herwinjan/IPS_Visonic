@@ -1,7 +1,76 @@
 <?php
 //
 
+
+if (@constant('IPS_BASE') == null) //Nur wenn Konstanten noch nicht bekannt sind.
+{
+define('IPS_BASE', 10000);                             //Base Message
+define('IPS_DATAMESSAGE', IPS_BASE + 1100);             //Data Handler Message
+define('DM_CONNECT', IPS_DATAMESSAGE + 1);             //On Instance Connect
+define('DM_DISCONNECT', IPS_DATAMESSAGE + 2);          //On Instance Disconnect
+}
+
+trait InstanceStatus
+{
+    /**
+     * Ermittelt den Parent und verwaltet die Einträge des Parent im MessageSink
+     * Ermöglicht es das Statusänderungen des Parent empfangen werden können.
+     *
+     * @access private
+     */
+    protected function GetParentData()
+    {
+        $OldParentId = $this->Parent;
+        $ParentId = @IPS_GetInstance($this->InstanceID)['ConnectionID'];
+        if ($OldParentId > 0)
+            $this->UnregisterMessage($OldParentId, IM_CHANGESTATUS);
+        if ($ParentId > 0)
+        {
+            $this->RegisterMessage($ParentId, IM_CHANGESTATUS);
+            $this->Parent = $ParentId;
+        }
+        else
+            $this->Parent = 0;
+        return $ParentId;
+    }
+    /**
+     * Setzt den Status dieser Instanz auf den übergebenen Status.
+     * Prüft vorher noch ob sich dieser vom aktuellen Status unterscheidet.
+     *
+     * @access protected
+     * @param int $InstanceStatus
+     */
+    protected function SetStatus($InstanceStatus)
+    {
+        if ($InstanceStatus <> IPS_GetInstance($this->InstanceID)['InstanceStatus'])
+            parent::SetStatus($InstanceStatus);
+    }
+    /**
+     * Prüft den Parent auf vorhandensein und Status.
+     *
+     * @access protected
+     * @return bool True wenn Parent vorhanden und in Status 102, sonst false.
+     */
+    protected function HasActiveParent()
+    {
+        $instance = @IPS_GetInstance($this->InstanceID);
+        if ($instance['ConnectionID'] > 0)
+        {
+            $parent = IPS_GetInstance($instance['ConnectionID']);
+            if ($parent['InstanceStatus'] == 102)
+                return true;
+        }
+        return false;
+    }
+}
+
+
 class VisonicGateway extends IPSModule {
+     use DebugHelper,
+        InstanceStatus;
+
+
+        var $ParentID;
 
    // The constructor of the module
    // Overrides the default constructor of IPS
@@ -27,9 +96,13 @@ class VisonicGateway extends IPSModule {
        // Do not delete this line
        IPS_LogMessage("Visonic DEBUG", "Apply changes!");
        parent::ApplyChanges();
+       $this->ParentID = $this->GetParentData();
+       IPS_LogMessage("Visonic DEBUG", print_r($ParentID));
+       $this->RegisterMessage($this->InstanceID, DM_CONNECT);
+       $this->RegisterMessage($this->InstanceID, DM_DISCONNECT);
        $this->RequireParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
        $this->ConnectParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
-       $this->RegisterMessage(0, 10100 );
+       //$this->RegisterMessage(0, 10100 );
 
    }
 
