@@ -110,6 +110,7 @@ class VisonicGateway extends IPSModule {
        parent::ApplyChanges();
        $this->ParentID = $this->GetParentData();
        IPS_LogMessage("Visonic PID", $this->ParentID);
+       IPS_LogMessage("Visonic PID", IPS_GetProperty($this->ParentID, 'Status'));
        $this->RegisterMessage($this->InstanceID, DM_CONNECT);
        $this->RegisterMessage($this->InstanceID, DM_DISCONNECT);
        $this->RequireParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
