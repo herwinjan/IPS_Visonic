@@ -123,13 +123,13 @@ trait InstanceStatus
  * @package VisonicGateway
  * @property int $Parent
  */
-class VisonicGateway extends IPSModule {
+class VisonicAlarmDevice extends IPSModule {
      use
         InstanceStatus;
 
         var $Parent;
         var $ParentID;
-       
+
 
    // The constructor of the module
    // Overrides the default constructor of IPS
