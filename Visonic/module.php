@@ -135,26 +135,16 @@ class VisonicAlarmDevice extends IPSModule {
    // Overrides the default constructor of IPS
    public function __construct($InstanceID)  {
        // Do not delete this row
-       parent::__construct();
+       parent::__construct($InstanceID);
 
        // Self-service code
    }
 
    // Overrides the internal IPS_Create ($ id) function
-   public function Create( $InstanceID, $json_file)  {
+   public function Create( )  {
        // Do not delete this row.
-       parent::Create($InstanceID);
+       parent::Create();
 
-       $json = @file_get_contents($json_file);
-       $data = @json_decode($json, true);
-       $this->module_data = $data;
-       $this->name = $data["name"];
-       if (!isset($this->name)) {
-          IPS_LogMessage(__CLASS__, "Reading Moduldata from module.json failed!");
-          return false;
-       }
-       $this->useBufferVar=! (method_exists($this,'GetBuffer'));
-       $this->DEBUGLOG = IPS_GetLogDir() . "/" . $data["name"] . "debug.log";
 
 
        $this->RequireParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
