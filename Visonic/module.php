@@ -252,8 +252,13 @@ class VisonicAlarmDevice extends IPSModule {
                    if (isset($dt["status"]))
                    {
                         IPS_LogMessage("Visonic DEBUG","Zone: ".$dt["id"]." status: ".$dt["status"]);
-                         $sid=@IPS_GetObjectIDByIdent("VisonicZone",$dt["id"]);
-                         if ($sid) SetValue($sid,$dt["status"]);
+                         $sid=@IPS_GetObjectIDByIdent("VisonicZone".$dt["id"],$this->InstanceID);
+                         if ($sid)
+                         {
+                              $b=GetValue($sid);
+                              if ($b!=$dt["status"])
+                                   SetValue($sid,$dt["status"]);
+                         }
                    }
                    else
                    IPS_LogMessage("Visonic DEBUG","Zone: Unknown action => ".$dt["id"]);
@@ -334,7 +339,7 @@ class VisonicAlarmDevice extends IPSModule {
 	$this->SetVariable( $VarID, $Type, $Value );
 }
 
-function SetVariable( $VarID, $Type, $Value )
+private function SetVariable( $VarID, $Type, $Value )
 {
 	switch( $Type )
 	{
