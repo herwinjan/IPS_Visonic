@@ -252,7 +252,9 @@ class VisonicAlarmDevice extends IPSModule {
                    if (isset($dt["status"]))
                    {
                         IPS_LogMessage("Visonic DEBUG","Zone: ".$dt["id"]." status: ".$dt["status"]);
-                         $sid=@IPS_GetObjectIDByIdent("VisonicZone".$dt["id"],0);
+
+                        $id=@IPS_GetObjectIDByIdent("VisonicZones",$this->InstanceID);
+                         $sid=@IPS_GetObjectIDByIdent("VisonicZone".$dt["id"],$id);
                          IPS_LogMessage("Visonic DEBUG","ident $sid");
                          if ($sid !== false)
                          {
