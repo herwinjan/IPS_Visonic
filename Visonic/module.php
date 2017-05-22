@@ -260,7 +260,7 @@ class VisonicAlarmDevice extends IPSModule {
                          {
                               IPS_LogMessage("Visonic DEBUG","got ID for ZOne ".$sid);
                               $b=GetValue($sid);
-                              IPS_LogMessage("Visonic DEBUG","status nu: ".$b." new: ".$st["status"]);
+                              IPS_LogMessage("Visonic DEBUG","status nu: ".$b." new: ".$dt["status"]);
                               if ($b!=$dt["status"])
                                    SetValue($sid,$dt["status"]);
                          }
