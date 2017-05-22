@@ -83,6 +83,7 @@ class VisonicGateway extends IPSModule {
 
         var $Parent;
         var $ParentID;
+        var $alarmID;
 
    // The constructor of the module
    // Overrides the default constructor of IPS
@@ -102,6 +103,24 @@ class VisonicGateway extends IPSModule {
        $this->RegisterMessage(0, 10100 );
        $this->RegisterPropertyBoolean('Active', false);
        IPS_LogMessage("Visonic DEBUG", "Create!");
+
+       $sid=@IPS_GetObjectIDByIdent("VisonicAlarm",0);
+       if ($sid==false)
+       {
+            $sid=IPS_CreateInstance("{485D0419-BE97-4548-AA9C-C083EB82E61E}");
+            IPS_SetName($sid,"Visonic Alarm");
+            IPS_SetIdent($sid,"VisonicAlarm");
+            IPS_ApplyChanges($sid);
+            $this->alarmID=$sid;
+
+            $this->RegisterVariableInteger("VisonicAlarmStatus","Status","",$sid);
+            $this->RegisterVariableInteger("VisonicAlarmFlag","Flag","",$sid);
+
+       }
+       else
+       {
+            $this->alarmID=$sid;
+       }
 
    }
 
