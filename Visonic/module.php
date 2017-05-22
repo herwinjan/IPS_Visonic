@@ -223,8 +223,9 @@ class VisonicAlarmDevice extends IPSModule {
                     IPS_LogMessage("Visonic DEBUG","got zone ".$dt["data"][1]["name"]);
                     $cat=$this->CreateCategory("Zones","VisonicZones",$this->InstanceID);
                     if ($cat) {
-                    foreach ($dt["data"] as $z=>$key)
+                    foreach ($dt["data"] as $key=>$z)
                     {
+                         IPS_LogMessage("Visonic DEBUG","Create Zone: ".$z["name"]." key: ".$key." in $cat");
                          $this->CreateVariable($z["name"],1,0,"VisonicZone".$key,$cat);
                     }
                }
@@ -330,7 +331,26 @@ class VisonicAlarmDevice extends IPSModule {
 	IPS_SetName( $VarID, $Name );
 	if ( '' != $Ident )
 	   IPS_SetIdent( $VarID, $Ident );
-	SetVariable( $VarID, $Type, $Value );
+	$this->SetVariable( $VarID, $Type, $Value );
+}
+
+function SetVariable( $VarID, $Type, $Value )
+{
+	switch( $Type )
+	{
+	   case 0: // boolean
+	      SetValueBoolean( $VarID, $Value );
+	      break;
+	   case 1: // integer
+	      SetValueInteger( $VarID, $Value );
+	      break;
+	   case 2: // float
+	      SetValueFloat( $VarID, $Value );
+	      break;
+	   case 3: // string
+	      SetValueString( $VarID, $Value );
+	      break;
+	}
 }
 
 
