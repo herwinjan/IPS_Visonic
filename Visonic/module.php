@@ -110,11 +110,12 @@ class VisonicGateway extends IPSModule {
             $sid=IPS_CreateInstance("{485D0419-BE97-4548-AA9C-C083EB82E61E}");
             IPS_SetName($sid,"Visonic Alarm");
             IPS_SetIdent($sid,"VisonicAlarm");
-            IPS_ApplyChanges($sid);
+          IPS_ApplyChanges($sid);
             $this->alarmID=$sid;
 
             $this->RegisterVariableInteger("VisonicAlarmStatus","Status","",$sid);
             $this->RegisterVariableInteger("VisonicAlarmFlag","Flag","",$sid);
+            IPS_ApplyChanges($sid);
 
        }
        else
