@@ -217,6 +217,8 @@ class VisonicGateway extends IPSModule {
                     IPS_LogMessage("Visonic DEBUG","got ping!");
                     break;
                    case "state";
+                    $sid=@IPS_GetObjectIDByIdent("VisonicAlarmStatus",$this->alarmID);
+                    if ($sid) IPS_SetValue($sid,$dt["data"]);
                    IPS_LogMessage("Visonic DEBUG","State ".$dt["data"]);
                    break;
                    case "zonestate";
@@ -225,6 +227,8 @@ class VisonicGateway extends IPSModule {
                    break;
                    case "flag";
                    IPS_LogMessage("Visonic DEBUG","Flag ".$dt["data"]);
+                   $sid=@IPS_GetObjectIDByIdent("VisonicAlarmFlag",$this->alarmID);
+                   if ($sid) IPS_SetValue($sid,$dt["data"]);
                    break;
                    case "zonestatus";
 
