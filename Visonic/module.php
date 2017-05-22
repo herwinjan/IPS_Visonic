@@ -11,6 +11,13 @@ define('DM_DISCONNECT', IPS_DATAMESSAGE + 2);          //On Instance Disconnect
  define('IPS_INSTANCEMESSAGE', IPS_BASE + 500);         //Instance Manager Message
 define('IM_CHANGESTATUS', IPS_INSTANCEMESSAGE + 5);    //Status was Changed
    define('IM_CHANGESETTINGS', IPS_INSTANCEMESSAGE + 6);  //Settings were Changed
+   define('IPS_VARIABLEMESSAGE', IPS_BASE + 600);              //Variable Manager Message
+   define('VM_CREATE', IPS_VARIABLEMESSAGE + 1);               //Variable Created
+   define('VM_DELETE', IPS_VARIABLEMESSAGE + 2);               //Variable Deleted
+   define('VM_UPDATE', IPS_VARIABLEMESSAGE + 3);               //On Variable Update
+   define('VM_CHANGEPROFILENAME', IPS_VARIABLEMESSAGE + 4);    //On Profile Name Change
+   define('VM_CHANGEPROFILEACTION', IPS_VARIABLEMESSAGE + 5);  //On Profile Action Change
+
 }
 
 $systemState = array (
@@ -188,52 +195,7 @@ class VisonicAlarmDevice extends IPSModule {
         $id=$SenderID;
         IPS_LogMessage("Visonic DEBUG", "TS: $TimeStamp SenderID ".$SenderID." with MessageID ".$Message." Data: ".print_r($Data, true));
         switch ($Message) {
-            case self::VM_UPDATE:
-                $this->Publish($id,$Data);
-                break;
-            case self::VM_DELETE:
-                $this->UnSubscribe($id);
-                break;
-            case self::IM_CHANGESTATUS:
-                switch ($Data[0]) {
-                    case self::ST_AKTIV:
-                        $this->debug(__CLASS__,__FUNCTION__."I/O Modul > Aktiviert");
-                       // $this->MQTTDisconnect();
-                        break;
-                    case self::ST_INACTIV:
-                        $this->debug(__CLASS__,__FUNCTION__."I/O Modul > Deaktiviert");
-                        //$this->MQTTDisconnect();
-                        break;
-                    case self::ST_ERROR_0:
-                        $this->debug(__CLASS__,__FUNCTION__."I/O Modul > Fehler");
-                        //$this->MQTTDisconnect();
-                        break;
-                    default:
-                        IPS_LogMessage(__CLASS__,__FUNCTION__."I/O Modul unbekantes Ereignis ".$Data[0]);
-                        break;
-                }
-                break;
-            case self::IPS_KERNELMESSAGE:
-                $kmsg=$Data[0];
-                switch ($kmsg) {
-                    case self::KR_READY:
-                        IPS_LogMessage(__CLASS__,__FUNCTION__." KR_Ready ->reconect");
-                        //$this->MQTTDisconnect();
-                        break;
-/*
-                    case self::KR_UNINIT:
-                        // not working :(
-                        $msgid=$this->GetBuffer("MsgID");
-                        IPS_SetProperty($this->InstanceID,'MsgID',(Integer)$msgid);
-                        IPS_ApplyChanges($this->InstanceID);
-                        IPS_LogMessage(__CLASS__,__FUNCTION__." KR_UNINIT ->disconnect()");
-                        break;  */
 
-                    default:
-                        IPS_LogMessage(__CLASS__,__FUNCTION__." Kernelmessage unhahndled, ID".$kmsg);
-                        break;
-                }
-                break;
             default:
                 IPS_LogMessage(__CLASS__,__FUNCTION__." Unknown Message $Message");
                 break;
@@ -261,7 +223,7 @@ class VisonicAlarmDevice extends IPSModule {
                     break;
                    case "state";
                     $sid=@IPS_GetObjectIDByIdent("VisonicAlarmStatus",$this->InstanceID);
-                    if ($sid) IPS_SetValue($sid,$dt["data"]);
+                    if ($sid) SetValue($sid,$dt["data"]);
                    IPS_LogMessage("Visonic DEBUG","State ".$dt["data"]);
                    break;
                    case "zonestate";
@@ -271,7 +233,7 @@ class VisonicAlarmDevice extends IPSModule {
                    case "flag";
                    IPS_LogMessage("Visonic DEBUG","Flag ".$dt["data"]);
                    $sid=@IPS_GetObjectIDByIdent("VisonicAlarmFlag",$this->InstanceID);
-                   if ($sid) IPS_SetValue($sid,$dt["data"]);
+                   if ($sid) SetValue($sid,$dt["data"]);
                    break;
                    case "zonestatus";
 
