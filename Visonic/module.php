@@ -13,9 +13,55 @@ define('IM_CHANGESTATUS', IPS_INSTANCEMESSAGE + 5);    //Status was Changed
    define('IM_CHANGESETTINGS', IPS_INSTANCEMESSAGE + 6);  //Settings were Changed
 }
 
-
-
-
+$systemState = array (
+	0x00 => "Uitgeschakeld",
+	0x01 => "Exit Delay",
+	0x02 => "Exit Delay",
+	0x03 => "Entry Delay",
+	0x04 => "Ingeschakeld (Thuis)",
+	0x05 => "Ingeschakeld (Volledig)",
+	0x06 => "User Test",
+	0x07 => "Downloading",
+	0x08 => "Programming",
+	0x09 => "Installer",
+	0x0A => "Home Bypass",
+	0x0B => "Away Bypass",
+	0x0C => "Ready",
+	0x0D => "Not Ready"
+);
+$zoneEventType = array (
+	0x00 => "None",
+	0x01 => "Tamper Alarm",
+	0x02 => "Tamper Restore",
+	0x03 => "Open",
+	0x04 => "Closed",
+	0x05 => "Violated (Motion)",
+	0x06 => "Panic Alarm",
+	0x07 => "RF Jamming",
+	0x08 => "Tamper Open",
+	0x09 => "Communication Failure",
+	0x0A => "Line Failure",
+	0x0B => "Fuse",
+	0x0C => "Not Active",
+	0x0D => "Low Battery",
+	0x0E => "AC Failure",
+	0x0F => "Fire Alarm",
+	0x10 => "Emergency",
+	0x11 => "Siren Tamper",
+	0x12 => "Siren Tamper Restore",
+	0x13 => "Siren Low Battery",
+	0x14 => "Siren AC Fail"
+);
+$stateFlags = array (
+	1 => "Klaar om in te schakelen",
+	2 => "Alert in geheugen",
+	4 => "Probleem",
+	8 => "Bypass On",
+	16 => "Last 10 seconds of entry or exit delay",
+	32 => "Zone event",
+	64 => "Arm, disarm event",
+	128 => "Alarm!"
+);
 
 trait InstanceStatus
 {
@@ -83,13 +129,13 @@ class VisonicGateway extends IPSModule {
 
         var $Parent;
         var $ParentID;
-        var $alarmID;
+       
 
    // The constructor of the module
    // Overrides the default constructor of IPS
    public function __construct($InstanceID)  {
        // Do not delete this row
-       parent::__construct($InstanceID);
+       parent::__construct();
 
        // Self-service code
    }
@@ -104,23 +150,16 @@ class VisonicGateway extends IPSModule {
        $this->RegisterPropertyBoolean('Active', false);
        IPS_LogMessage("Visonic DEBUG", "Create!");
 
-       $sid=@IPS_GetObjectIDByIdent("VisonicAlarm",0);
+
+       $sid=$sid=@IPS_GetObjectIDByIdent("VisonicAlarmStatus",0);
        if ($sid==false)
        {
-            $sid=IPS_CreateInstance("{485D0419-BE97-4548-AA9C-C083EB82E61E}");
-            IPS_SetName($sid,"Visonic Alarm");
-            IPS_SetIdent($sid,"VisonicAlarm");
-          IPS_ApplyChanges($sid);
-            $this->alarmID=$sid;
-
-            $this->RegisterVariableInteger("VisonicAlarmStatus","Status","",$sid);
-            $this->RegisterVariableInteger("VisonicAlarmFlag","Flag","",$sid);
-            IPS_ApplyChanges($sid);
-
+            $this->RegisterVariableInteger("VisonicAlarmStatus","Status","",0);
+            $this->RegisterVariableInteger("VisonicAlarmFlag","Flag","",0);
        }
        else
        {
-            $this->alarmID=$sid;
+
        }
 
    }
@@ -218,7 +257,7 @@ class VisonicGateway extends IPSModule {
                     IPS_LogMessage("Visonic DEBUG","got ping!");
                     break;
                    case "state";
-                    $sid=@IPS_GetObjectIDByIdent("VisonicAlarmStatus",$this->alarmID);
+                    $sid=@IPS_GetObjectIDByIdent("VisonicAlarmStatus",$this->InstanceID);
                     if ($sid) IPS_SetValue($sid,$dt["data"]);
                    IPS_LogMessage("Visonic DEBUG","State ".$dt["data"]);
                    break;
@@ -228,7 +267,7 @@ class VisonicGateway extends IPSModule {
                    break;
                    case "flag";
                    IPS_LogMessage("Visonic DEBUG","Flag ".$dt["data"]);
-                   $sid=@IPS_GetObjectIDByIdent("VisonicAlarmFlag",$this->alarmID);
+                   $sid=@IPS_GetObjectIDByIdent("VisonicAlarmFlag",$this->InstanceID);
                    if ($sid) IPS_SetValue($sid,$dt["data"]);
                    break;
                    case "zonestatus";
