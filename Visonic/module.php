@@ -217,6 +217,13 @@ class VisonicAlarmDevice extends IPSModule {
                   case "zones":
                     print_r($dt["data"]);
                     IPS_LogMessage("Visonic DEBUG","got zone ".$dt["data"][1]["name"]);
+                    $cat=$this->CreateCategory("Zones","VisonicZones",$this->InstanceID);
+                    if ($cat) {
+                    foreach ($dt["data"] as $z=>$key)
+                    {
+                         $this->CreateVariable($z["name"],1,0,"VisonicZone".$key,$cat);
+                    }
+               }
                     break;
                    case "ping":
                     IPS_LogMessage("Visonic DEBUG","got ping!");
@@ -240,6 +247,8 @@ class VisonicAlarmDevice extends IPSModule {
                    if (isset($dt["status"]))
                    {
                         IPS_LogMessage("Visonic DEBUG","Zone: ".$dt["id"]." status: ".$dt["status"]);
+                         $sid=@IPS_GetObjectIDByIdent("VisonicZone",$dt["id"]);
+                         if ($sid) SetValue($sid,$dt["status"]);
                    }
                    else
                    IPS_LogMessage("Visonic DEBUG","Zone: Unknown action => ".$dt["id"]);
@@ -262,6 +271,64 @@ class VisonicAlarmDevice extends IPSModule {
           return "String data for the device instance!";
 
    }
+   private function CreateCategory( $Name, $Ident = '', $ParentID = 0 )
+{
+	$RootCategoryID=$this->InstanceID;
+	echo "CreateCategory: ( $Name, $Ident, $ParentID ) \n";
+	if ( '' != $Ident )
+	{
+		$CatID = @IPS_GetObjectIDByIdent( $Ident, $ParentID );
+		if ( false !== $CatID )
+		{
+		   $Obj = IPS_GetObject( $CatID );
+		   if ( 0 == $Obj['ObjectType'] ) // is category?
+		      return $CatID;
+		}
+	}
+	$CatID = IPS_CreateCategory();
+	IPS_SetName( $CatID, $Name );
+   IPS_SetIdent( $CatID, $Ident );
+	if ( 0 == $ParentID )
+		if ( IPS_ObjectExists( $RootCategoryID ) )
+			$ParentID = $RootCategoryID;
+	IPS_SetParent( $CatID, $ParentID );
+	return $CatID;
+}
+
+   private function CreateVariable( $Name, $Type, $Value, $Ident = '', $ParentID = 0 )
+{
+	echo "CreateVariable: ( $Name, $Type, $Value, $Ident, $ParentID ) \n";
+	if ( '' != $Ident )
+	{
+		$VarID = @IPS_GetObjectIDByIdent( $Ident, $ParentID );
+		if ( false !== $VarID )
+		{
+		   SetVariable( $VarID, $Type, $Value );
+		   return;
+		}
+	}
+	$VarID = @IPS_GetObjectIDByName( $Name, $ParentID );
+	if ( false !== $VarID ) // exists?
+	{
+	   $Obj = IPS_GetObject( $VarID );
+	   if ( 2 == $Obj['ObjectType'] ) // is variable?
+		{
+		   $Var = IPS_GetVariable( $VarID );
+		   if ( $Type == $Var['VariableValue']['ValueType'] )
+			{
+			   SetVariable( $VarID, $Type, $Value );
+			   return;
+			}
+		}
+	}
+	$VarID = IPS_CreateVariable( $Type );
+	IPS_SetParent( $VarID, $ParentID );
+	IPS_SetName( $VarID, $Name );
+	if ( '' != $Ident )
+	   IPS_SetIdent( $VarID, $Ident );
+	SetVariable( $VarID, $Type, $Value );
+}
+
 
    /**
    * The following functions are automatically available when the module has been inserted via the "Module Control".
