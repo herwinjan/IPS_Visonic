@@ -204,6 +204,7 @@ class VisonicAlarmDevice extends IPSModule
       If  ( !IPS_VariableProfileExists ( "VisonicZoneProfile" ) )
       {
           IPS_CreateVariableProfile("VisonicZoneProfile",1);
+          global $zoneEventType;
           foreach ($zoneEventType as $key => $value) {
                IPS_SetVariableProfileAssociation("VisonicZoneProfile",$key,$value,"",-1);
           }
@@ -297,7 +298,8 @@ class VisonicAlarmDevice extends IPSModule
                     {
                          if ($cat) {
                             IPS_LogMessage("Visonic DEBUG", "Create Zone: ".$z["name"]." key: ".$key." in $cat");
-                            $this->CreateVariable($z["name"], 1, 0, "VisonicZone".$key, $cat);
+                            $id=$this->CreateVariable($z["name"], 1, 0, "VisonicZone".$key, $cat);
+                            IPS_SetVariableCustomProfile($id,"VisonicZoneProfile");
                          }
                          $this->zones[$key]=$z["name"];
                     }
@@ -407,13 +409,13 @@ class VisonicAlarmDevice extends IPSModule
 
         //Parse and write values to our variables
     }
-    public function ForwardData($JSONString)
+  /*  public function ForwardData($JSONString)
     {
         parent::ForwardData($JSONString);
         $data = json_decode($JSONString);
         IPS_LogMessage("Visonic FRWD", utf8_decode($data->Buffer));
-        return "String data for the device instance!";
-    }
+       return "String data for the device instance!";
+}*/
     private function CreateCategory($Name, $Ident = '', $ParentID = 0)
     {
         $RootCategoryID=$this->InstanceID;
