@@ -18,6 +18,29 @@ define('IM_CHANGESTATUS', IPS_INSTANCEMESSAGE + 5);    //Status was Changed
    define('VM_CHANGEPROFILEACTION', IPS_VARIABLEMESSAGE + 5);  //On Profile Action Change
 }
 
+$zoneEventType = array (
+	0x00 => "None",
+	0x01 => "Tamper Alarm",
+	0x02 => "Tamper Restore",
+	0x03 => "Open",
+	0x04 => "Closed",
+	0x05 => "Violated (Motion)",
+	0x06 => "Panic Alarm",
+	0x07 => "RF Jamming",
+	0x08 => "Tamper Open",
+	0x09 => "Communication Failure",
+	0x0A => "Line Failure",
+	0x0B => "Fuse",
+	0x0C => "Not Active",
+	0x0D => "Low Battery",
+	0x0E => "AC Failure",
+	0x0F => "Fire Alarm",
+	0x10 => "Emergency",
+	0x11 => "Siren Tamper",
+	0x12 => "Siren Tamper Restore",
+	0x13 => "Siren Low Battery",
+	0x14 => "Siren AC Fail" );
+
 $systemState = array(
     0x00 => "Uitgeschakeld",
     0x01 => "Exit Delay",
@@ -178,6 +201,13 @@ class VisonicAlarmDevice extends IPSModule
           IPS_SetVariableProfileAssociation("VisonicStatusProfile",4,"Ingeschakeld (Weg)","",-1);
 
       }
+      If  ( !IPS_VariableProfileExists ( "VisonicZoneProfile" ) )
+      {
+          IPS_CreateVariableProfile("VisonicZoneProfile",1);
+          foreach ($zoneEventType as $key => $value) {
+               IPS_SetVariableProfileAssociation("VisonicZoneProfile",$key,$value,"",-1);
+          }
+     }
       If  ( !IPS_VariableProfileExists ( "VisonicControlProfile" ) )
       {
           IPS_CreateVariableProfile("VisonicControlProfile",1);
