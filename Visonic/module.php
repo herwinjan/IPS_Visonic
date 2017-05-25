@@ -165,7 +165,7 @@ class VisonicAlarmDevice extends IPSModule
        $this->RegisterPropertyBoolean('Active', false);
        IPS_LogMessage("Visonic DEBUG", "Create!");
 
-      If  ( !IPS_VariableProfileExists ( "VisonicStatus" ) )
+      If  ( !IPS_VariableProfileExists ( "VisonicStatusProfile" ) )
       {
           IPS_CreateVariableProfile("VisonicStatusProfile",1);
           IPS_SetVariableProfileAssociation("VisonicStatusProfile",0,"Uitgeschakeld","",-1);
@@ -176,7 +176,7 @@ class VisonicAlarmDevice extends IPSModule
           IPS_SetVariableProfileAssociation("VisonicStatusProfile",4,"Ingeschakeld (Weg)","",-1);
 
       }
-      If  ( !IPS_VariableProfileExists ( "VisonicControl" ) )
+      If  ( !IPS_VariableProfileExists ( "VisonicControlProfile" ) )
       {
           IPS_CreateVariableProfile("VisonicControlProfile",1);
           IPS_SetVariableProfileAssociation("VisonicControlProfile",0,"Uitgeschakelen","",-1);
@@ -433,7 +433,7 @@ class VisonicAlarmDevice extends IPSModule
    {
        // Self-definedCode
        IPS_LogMessage("Visonic", "Set Status to $status");
-       $this->SendDataToParent(json_encode(Array("DataID" => "{3AB77A94-3467-4E66-8A73-840B4AD89582}", "Buffer" => $status)));
+       $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => $status)));
 
    }
 }
