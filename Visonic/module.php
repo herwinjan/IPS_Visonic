@@ -219,6 +219,20 @@ class VisonicAlarmDevice extends IPSModule
        //$this->RegisterMessage(0, 10100 );
    }
 
+   public function RequestAction ( $ident ,  $value )  {
+
+    Switch ( $ident )  {
+        case  "VisonicControl":
+               $this->setStatus($value);
+
+
+            break;
+        default:
+            throw new Exception ( "Invalid ID" ) ;
+    }
+}
+
+
 
     public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
     {
@@ -279,9 +293,23 @@ class VisonicAlarmDevice extends IPSModule
                    case "flag":
                    IPS_LogMessage("Visonic DEBUG", "Flag ".$dt["data"]);
                    $this->flag=$dt["data"];
-                   $sid=@IPS_GetObjectIDByIdent("VisonicAlarmFlag", $this->InstanceID);
+                   $sid=@IPS_GetObjectIDByIdent("VisonicFlag", $this->InstanceID);
                    if ($sid) {
-                       SetValue($sid, $dt["data"]);
+                        global $stateFlags;
+                        $str = "";
+                        $int = $dt["data"];
+                        $first = TRUE;
+                        foreach ( $stateFlags as $i => $v )
+                        {
+                             if (($int & $i) == $i)
+                             {
+                                  if (! $first)
+                                       $str .= " | ";
+                                  $str .= $stateFlags [$i];
+                                  $first = FALSE;
+                             }
+                        }                        
+                       SetValue($sid, $str);
                    }
                    break;
                    case "zonestatus":
