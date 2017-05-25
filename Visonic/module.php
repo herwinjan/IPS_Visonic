@@ -138,6 +138,8 @@ class VisonicAlarmDevice extends IPSModule
     public $ParentID;
     public $status=0;
     public $flag=0;
+    public $alarm=false;
+    public $zones=array();
 
 
    // The constructor of the module
@@ -260,11 +262,14 @@ class VisonicAlarmDevice extends IPSModule
                     print_r($dt["data"]);
                     IPS_LogMessage("Visonic DEBUG", "got zone ".$dt["data"][1]["name"]);
                     $cat=$this->CreateCategory("Zones", "VisonicZones", $this->InstanceID);
-                    if ($cat) {
-                        foreach ($dt["data"] as $key=>$z) {
+                    $zones=array();
+                    foreach ($dt["data"] as $key=>$z)
+                    {
+                         if ($cat) {
                             IPS_LogMessage("Visonic DEBUG", "Create Zone: ".$z["name"]." key: ".$key." in $cat");
                             $this->CreateVariable($z["name"], 1, 0, "VisonicZone".$key, $cat);
-                        }
+                         }
+                         $this->zones[$key]=$z["name"];
                     }
                     break;
                    case "ping":
@@ -290,14 +295,46 @@ class VisonicAlarmDevice extends IPSModule
                    break;
                    case "zoneType":
                    break;
+                   case "zonealarm":
+                        $int=$dt["panel"];
+                        $z=$dt["id"];
+                        $zone=$this->zones[$z];
+
+                        if (($int & 128) == 128)
+                        {
+                             if ($this->alarm==false)
+                             {
+                                   $this->alarm=true;
+                                   curl_setopt_array($ch = curl_init(), array(
+                                       CURLOPT_URL => "https://api.pushover.net/1/messages.json",
+                                       CURLOPT_SSL_VERIFYPEER => false,
+                                       CURLOPT_POSTFIELDS => array(
+                                       "token" => "aqxf1ws661abdjtut62qzr5v9dkn66",
+                                       "user" => "uxqkkyhvh659ruzwfeh47b7vmvzbeq",
+                                       "message" => "Alarm in ".$zone."($z)!!",
+                                       "sound" => "siren",
+                                       "priority" => "2",
+                                       "retry" => "30",
+                                       "expire" => "3600",
+                                   )));
+                                   curl_exec($ch);
+                                   curl_close($ch);
+                             }
+                        }
+                        else {
+                             $this->alarm=false;
+                        }
+                   break;
                    case "flag":
                    IPS_LogMessage("Visonic DEBUG", "Flag ".$dt["data"]);
                    $this->flag=$dt["data"];
+
+                   $int = $dt["data"];
+
                    $sid=@IPS_GetObjectIDByIdent("VisonicFlag", $this->InstanceID);
                    if ($sid) {
                         global $stateFlags;
                         $str = "";
-                        $int = $dt["data"];
                         $first = TRUE;
                         foreach ( $stateFlags as $i => $v )
                         {
