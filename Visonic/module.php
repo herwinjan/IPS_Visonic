@@ -308,7 +308,7 @@ class VisonicAlarmDevice extends IPSModule
                                   $str .= $stateFlags [$i];
                                   $first = FALSE;
                              }
-                        }                        
+                        }
                        SetValue($sid, $str);
                    }
                    break;
@@ -379,7 +379,7 @@ class VisonicAlarmDevice extends IPSModule
             $VarID = @IPS_GetObjectIDByIdent($Ident, $ParentID);
             if (false !== $VarID) {
                 $this->SetVariable($VarID, $Type, $Value);
-                return;
+                return $VarID;
             }
         }
         $VarID = @IPS_GetObjectIDByName($Name, $ParentID);
@@ -389,7 +389,7 @@ class VisonicAlarmDevice extends IPSModule
            $Var = IPS_GetVariable($VarID);
                 if ($Type == $Var['VariableValue']['ValueType']) {
                     $this->SetVariable($VarID, $Type, $Value);
-                    return;
+                    return $VarID;
                 }
             }
         }
