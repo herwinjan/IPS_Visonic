@@ -204,7 +204,7 @@ class VisonicAlarmDevice extends IPSModule
       If  ( !IPS_VariableProfileExists ( "VisonicZoneProfile" ) )
       {
           IPS_CreateVariableProfile("VisonicZoneProfile",1);
-          global $zoneEventType;
+          global $zoneEventType; 
           foreach ($zoneEventType as $key => $value) {
                IPS_SetVariableProfileAssociation("VisonicZoneProfile",$key,$value,"",-1);
           }
