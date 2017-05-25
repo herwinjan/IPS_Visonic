@@ -179,9 +179,9 @@ class VisonicAlarmDevice extends IPSModule
       If  ( !IPS_VariableProfileExists ( "VisonicControl" ) )
       {
           IPS_CreateVariableProfile("VisonicControl",1);
-          IPS_SetVariableProfileAssociation("VisonicStatus",0,"Uitgeschakelen","",-1);
-          IPS_SetVariableProfileAssociation("VisonicStatus",4,"Ingeschakelen (Thuis)","",-1);
-          IPS_SetVariableProfileAssociation("VisonicStatus",5,"Ingeschakelen (Weg)","",-1);
+          IPS_SetVariableProfileAssociation("VisonicControl",0,"Uitgeschakelen","",-1);
+          IPS_SetVariableProfileAssociation("VisonicControl",4,"Ingeschakelen (Thuis)","",-1);
+          IPS_SetVariableProfileAssociation("VisonicControl",5,"Ingeschakelen (Weg)","",-1);
 
       }
 
