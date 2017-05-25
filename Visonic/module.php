@@ -167,31 +167,31 @@ class VisonicAlarmDevice extends IPSModule
 
       If  ( !IPS_VariableProfileExists ( "VisonicStatus" ) )
       {
-          IPS_CreateVariableProfile("VisonicStatus",1);
-          IPS_SetVariableProfileAssociation("VisonicStatus",0,"Uitgeschakeld","",-1);
-          IPS_SetVariableProfileAssociation("VisonicStatus",1,"Wegloop vertraging","",-1);
-          IPS_SetVariableProfileAssociation("VisonicStatus",2,"Wegloop vertraging","",-1);
-          IPS_SetVariableProfileAssociation("VisonicStatus",3,"Binnekomst vertraging","",-1);
-          IPS_SetVariableProfileAssociation("VisonicStatus",4,"Ingeschakeld (Thuis)","",-1);
-          IPS_SetVariableProfileAssociation("VisonicStatus",4,"Ingeschakeld (Weg)","",-1);
+          IPS_CreateVariableProfile("VisonicStatusProfile",1);
+          IPS_SetVariableProfileAssociation("VisonicStatusProfile",0,"Uitgeschakeld","",-1);
+          IPS_SetVariableProfileAssociation("VisonicStatusProfile",1,"Wegloop vertraging","",-1);
+          IPS_SetVariableProfileAssociation("VisonicStatusProfile",2,"Wegloop vertraging","",-1);
+          IPS_SetVariableProfileAssociation("VisonicStatusProfile",3,"Binnekomst vertraging","",-1);
+          IPS_SetVariableProfileAssociation("VisonicStatusProfile",4,"Ingeschakeld (Thuis)","",-1);
+          IPS_SetVariableProfileAssociation("VisonicStatusProfile",4,"Ingeschakeld (Weg)","",-1);
 
       }
       If  ( !IPS_VariableProfileExists ( "VisonicControl" ) )
       {
-          IPS_CreateVariableProfile("VisonicControl",1);
-          IPS_SetVariableProfileAssociation("VisonicControl",0,"Uitgeschakelen","",-1);
-          IPS_SetVariableProfileAssociation("VisonicControl",4,"Ingeschakelen (Thuis)","",-1);
-          IPS_SetVariableProfileAssociation("VisonicControl",5,"Ingeschakelen (Weg)","",-1);
+          IPS_CreateVariableProfile("VisonicControlProfile",1);
+          IPS_SetVariableProfileAssociation("VisonicControlProfile",0,"Uitgeschakelen","",-1);
+          IPS_SetVariableProfileAssociation("VisonicControlProfile",4,"Ingeschakelen (Thuis)","",-1);
+          IPS_SetVariableProfileAssociation("VisonicControlProfile",5,"Ingeschakelen (Weg)","",-1);
 
       }
 
 //CreateVariable($Name, $Type, $Value, $Ident = '', $ParentID = 0)
        $id=$this->CreateVariable("Alarm Status",1,0,"VisonicStatus",$this->InstanceID);
-       IPS_SetVariableCustomProfile($id,"VisonicStatus");
+       IPS_SetVariableCustomProfile($id,"VisonicStatusProfile");
        $id=$this->CreateVariable("Alarm Mededeling",3,0,"VisonicFlag",$this->InstanceID);
 
        $id=$this->CreateVariable("Alarm Control",1,0,"VisonicControl",$this->InstanceID);
-       IPS_SetVariableCustomProfile($id,"VisonicControl");
+       IPS_SetVariableCustomProfile($id,"VisonicControlProfile");
        $this->EnableAction("VisonicControl");
        //IPS_SetVariableCustomAction()
 
