@@ -433,6 +433,7 @@ class VisonicAlarmDevice extends IPSModule
    {
        // Self-definedCode
        IPS_LogMessage("Visonic", "Set Status to $status");
+       $this->SendDataToParent(json_encode(Array("DataID" => "{3AB77A94-3467-4E66-8A73-840B4AD89582}", "Buffer" => $status)));
 
    }
 }
