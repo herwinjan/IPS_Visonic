@@ -411,7 +411,7 @@ class VisonicAlarmDevice extends IPSModule
 
     private function CreateVariable($Name, $Type, $Value, $Ident = '', $ParentID = 0)
     {
-        echo "CreateVariable: ( $Name, $Type, $Value, $Ident, $ParentID ) \n";
+        //echo "CreateVariable: ( $Name, $Type, $Value, $Ident, $ParentID ) \n";
         if ('' != $Ident) {
             $VarID = @IPS_GetObjectIDByIdent($Ident, $ParentID);
             if (false !== $VarID) {
