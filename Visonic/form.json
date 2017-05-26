@@ -1,6 +1,7 @@
 {
 	"elements":
 	[
-		{ "name": "Active", "type": "CheckBox", "caption": "Activate Instance" }
+		{ "name": "UserToken", "type": "ValidationTextBox", "caption": "User Token" },
+		{ "name": "ProgToken", "type": "ValidationTextBox", "caption": "Program Token" }
 	]
 }

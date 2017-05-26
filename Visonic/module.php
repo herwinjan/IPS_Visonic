@@ -163,6 +163,8 @@ class VisonicAlarmDevice extends IPSModule
     public $flag=0;
     public $alarm=false;
     public $zones=array();
+    private $usertoken="";
+    private $progtoken="";
 
 
    // The constructor of the module
@@ -187,7 +189,11 @@ class VisonicAlarmDevice extends IPSModule
        $this->RegisterMessage(0, 10503);
        $this->RegisterMessage(0, 11101);
 
-       $this->RegisterPropertyBoolean('Active', false);
+
+       $this->RegisterPropertyString('UserToken', "");
+       $this->RegisterPropertyString('ProgToken', "");
+
+
        IPS_LogMessage("Visonic DEBUG", "Create!");
 
       If  ( !IPS_VariableProfileExists ( "VisonicStatusProfile" ) )
@@ -245,6 +251,10 @@ class VisonicAlarmDevice extends IPSModule
        parent::ApplyChanges();
        $this->ParentID = $this->GetParentData();
        IPS_LogMessage("Visonic PID", $this->ParentID);
+
+       $this->usertoken=$this->ReadPropertyString("UserToken");
+       $this->progtoken=$this->ReadPropertyString("ProgToken");
+
        IPS_LogMessage("Visonic PID", IPS_GetProperty($this->ParentID, 'Open'));
        $this->RegisterMessage($this->InstanceID, DM_CONNECT);
        $this->RegisterMessage($this->InstanceID, DM_DISCONNECT);
@@ -308,7 +318,7 @@ class VisonicAlarmDevice extends IPSModule
                     IPS_LogMessage("Visonic DEBUG", "got ping!");
                     break;
                    case "state":
-                    $sid=@IPS_GetObjectIDByIdent("VisonicStatus", $this->InstanceID);
+                    $sid=@IPS_GetObjectIDByIdent("VisonicStatus  ", $this->InstanceID);
                     $this->satus=$dt["data"];
                     if ($sid) {
                         SetValue($sid, $dt["data"]);
@@ -341,8 +351,8 @@ class VisonicAlarmDevice extends IPSModule
                                        CURLOPT_URL => "https://api.pushover.net/1/messages.json",
                                        CURLOPT_SSL_VERIFYPEER => false,
                                        CURLOPT_POSTFIELDS => array(
-                                       "token" => "aqxf1ws661abdjtut62qzr5v9dkn66",
-                                       "user" => "uxqkkyhvh659ruzwfeh47b7vmvzbeq",
+                                       "token" => $this->progtoken,
+                                       "user" => $this->usertoken,
                                        "message" => "Alarm in ".$zone."($z)!!",
                                        "sound" => "siren",
                                        "priority" => "2",
