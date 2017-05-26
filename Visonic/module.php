@@ -204,7 +204,7 @@ class VisonicAlarmDevice extends IPSModule
       If  ( !IPS_VariableProfileExists ( "VisonicZoneProfile" ) )
       {
           IPS_CreateVariableProfile("VisonicZoneProfile",1);
-          global $zoneEventType; 
+          global $zoneEventType;
           foreach ($zoneEventType as $key => $value) {
                IPS_SetVariableProfileAssociation("VisonicZoneProfile",$key,$value,"",-1);
           }
@@ -308,7 +308,7 @@ class VisonicAlarmDevice extends IPSModule
                     IPS_LogMessage("Visonic DEBUG", "got ping!");
                     break;
                    case "state":
-                    $sid=@IPS_GetObjectIDByIdent("VisonicAlarmStatus", $this->InstanceID);
+                    $sid=@IPS_GetObjectIDByIdent("VisonicStatus", $this->InstanceID);
                     $this->satus=$dt["data"];
                     if ($sid) {
                         SetValue($sid, $dt["data"]);
