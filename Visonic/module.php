@@ -347,7 +347,7 @@ class VisonicAlarmDevice extends IPSModule
                              if ($this->alarm==false)
                              {
                                    $this->alarm=true;
-                                   $this->sendPushoverMessage("Alarm in ".$zone."($z)!!",2,"siren");
+                                   self::sendPushoverMessage("Alarm in ".$zone."($z)!!",2,"siren");
                              }
                         }
                         else {
@@ -503,7 +503,7 @@ class VisonicAlarmDevice extends IPSModule
 
    }
 
-   public function sendPushoverMessage(string $message, int $priority, string $sound
+   public static function sendPushoverMessage(string $message, int $priority, string $sound
         )
         {
              curl_setopt_array($ch = curl_init(), array(
