@@ -503,7 +503,7 @@ class VisonicAlarmDevice extends IPSModule
 
    }
 
-   public function sendPushoverMessage(string $message, integer $priority, string $sound
+   public function sendPushoverMessage(string $message, int $priority, string $sound
         )
         {
              curl_setopt_array($ch = curl_init(), array(
