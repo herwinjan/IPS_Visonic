@@ -506,6 +506,7 @@ class VisonicAlarmDevice extends IPSModule
    public function sendPushoverMessage(string $message, int $priority, string $sound
         )
         {
+             IPS_LogMessage("PushOver", "Send: $this->progtoken, $this->usertoken, $message, $priority, $sound");
              curl_setopt_array($ch = curl_init(), array(
                 CURLOPT_URL => "https://api.pushover.net/1/messages.json",
                 CURLOPT_SSL_VERIFYPEER => false,
