@@ -347,20 +347,7 @@ class VisonicAlarmDevice extends IPSModule
                              if ($this->alarm==false)
                              {
                                    $this->alarm=true;
-                                   curl_setopt_array($ch = curl_init(), array(
-                                       CURLOPT_URL => "https://api.pushover.net/1/messages.json",
-                                       CURLOPT_SSL_VERIFYPEER => false,
-                                       CURLOPT_POSTFIELDS => array(
-                                       "token" => $this->progtoken,
-                                       "user" => $this->usertoken,
-                                       "message" => "Alarm in ".$zone."($z)!!",
-                                       "sound" => "siren",
-                                       "priority" => "2",
-                                       "retry" => "30",
-                                       "expire" => "3600",
-                                   )));
-                                   curl_exec($ch);
-                                   curl_close($ch);
+                                   sendPushoverMessage("Alarm in ".$zone."($z)!!",2,"siren");
                              }
                         }
                         else {
@@ -515,4 +502,23 @@ class VisonicAlarmDevice extends IPSModule
        $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => "$status")));
 
    }
+
+   public function sendPushoverMessage($message, $priority=2, $sound=""
+        )
+        {
+             curl_setopt_array($ch = curl_init(), array(
+                CURLOPT_URL => "https://api.pushover.net/1/messages.json",
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_POSTFIELDS => array(
+                "token" => $this->progtoken,
+                "user" => $this->usertoken,
+                "message" => $message,
+                "sound" => $sound,
+                "priority" => "$priority",
+                "retry" => "30",
+                "expire" => "3600",
+            )));
+            curl_exec($ch);
+            curl_close($ch);
+        }
 }
