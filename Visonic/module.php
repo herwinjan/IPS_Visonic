@@ -190,8 +190,8 @@ class VisonicAlarmDevice extends IPSModule
        $this->RegisterMessage(0, 11101);
 
 
-       $this->RegisterPropertyString('UserToken', "");
-       $this->RegisterPropertyString('ProgToken', "");
+       $this->RegisterPropertyString("UserToken", "");
+       $this->RegisterPropertyString("ProgToken", "");
 
 
        IPS_LogMessage("Visonic DEBUG", "Create!");
@@ -252,8 +252,8 @@ class VisonicAlarmDevice extends IPSModule
        $this->ParentID = $this->GetParentData();
        IPS_LogMessage("Visonic PID", $this->ParentID);
 
-       $this->usertoken=$this->ReadPropertyString("UserToken");
-       $this->progtoken=$this->ReadPropertyString("ProgToken");
+      // $this->usertoken=$this->ReadPropertyString("UserToken");
+      // $this->progtoken=$this->ReadPropertyString("ProgToken");
 
        IPS_LogMessage("Visonic PID", IPS_GetProperty($this->ParentID, 'Open'));
        $this->RegisterMessage($this->InstanceID, DM_CONNECT);
@@ -506,6 +506,8 @@ class VisonicAlarmDevice extends IPSModule
    public function sendPushoverMessage(string $message, int $priority, string $sound
         )
         {
+             $this->usertoken=$this->ReadPropertyString("UserToken");
+             $this->progtoken=$this->ReadPropertyString("ProgToken");
              IPS_LogMessage("PushOver", "Send: $this->progtoken, $this->usertoken, $message, $priority, $sound");
              curl_setopt_array($ch = curl_init(), array(
                 CURLOPT_URL => "https://api.pushover.net/1/messages.json",
