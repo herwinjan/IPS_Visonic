@@ -318,19 +318,18 @@ class VisonicAlarmDevice extends IPSModule
                     IPS_LogMessage("Visonic DEBUG", "got ping!");
                     break;
                    case "state":
-                    $sid=@IPS_GetObjectIDByIdent("VisonicStatus  ", $this->InstanceID);
+                    $sid=@IPS_GetObjectIDByIdent("VisonicStatus", $this->InstanceID);
                     $this->satus=$dt["data"];
                     if ($sid) {
                         SetValue($sid, $dt["data"]);
                     }
                     if ($dt["data"]==0 || $dt["data"]==4 ||$dt["data"]==5)
                     {
-                    $sid=@IPS_GetObjectIDByIdent("VisonicControl", $this->InstanceID);
-                    $this->satus=$dt["data"];
-                    if ($sid) {
-                        SetValue($sid, $dt["data"]);
+                         $sid=@IPS_GetObjectIDByIdent("VisonicControl", $this->InstanceID);                    
+                         if ($sid) {
+                             SetValue($sid, $dt["data"]);
+                         }
                     }
-               }
                    IPS_LogMessage("Visonic DEBUG", "State ".$dt["data"]);
                    break;
                    case "zonestate":
@@ -338,7 +337,7 @@ class VisonicAlarmDevice extends IPSModule
                    case "zoneType":
                    break;
                    case "zonealarm":
-                        $int=$dt["panel"];
+                        $int=$dt["flag"];
                         $z=$dt["id"];
                         $zone=$this->zones[$z];
 
@@ -347,6 +346,7 @@ class VisonicAlarmDevice extends IPSModule
                              if ($this->alarm==false)
                              {
                                    $this->alarm=true;
+                                   IPS_LogMessage("Visonic DEBUG", "ALARM GAAT AF!!");
                                    $this->sendPushoverMessage("<b>Alarm gaat af!!!</b>Alarm in zone ".$zone."($z)!!",2,"siren");
                              }
                         }
