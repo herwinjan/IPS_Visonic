@@ -223,6 +223,13 @@ class VisonicAlarmDevice extends IPSModule
           IPS_SetVariableProfileAssociation("VisonicControlProfile",5,"Ingeschakelen (Weg)","",-1);
 
       }
+       If  ( !IPS_VariableProfileExists ( "VisonicZoneBatteryProfile" ) )
+       {
+           IPS_CreateVariableProfile("VisonicZoneBatteryProfile",1);
+           IPS_SetVariableProfileAssociation("VisonicZoneBatteryProfile",0,"Leeg","",-1);
+           IPS_SetVariableProfileAssociation("VisonicZoneBatteryProfile",1,"Vol","",-1);
+
+       }
 
 //CreateVariable($Name, $Type, $Value, $Ident = '', $ParentID = 0)
        $id=$this->CreateVariable("Alarm Status",1,0,"VisonicStatus",$this->InstanceID);
@@ -303,13 +310,20 @@ class VisonicAlarmDevice extends IPSModule
                     print_r($dt["data"]);
                     IPS_LogMessage("Visonic DEBUG", "got zone ".$dt["data"][1]["name"]);
                     $cat=$this->CreateCategory("Zones", "VisonicZones", $this->InstanceID);
-                    $zones=array();
+                    $bat=$this->CreateCategory("Battery", "VisonicZoneBattery", $this->InstanceID);
+
+
+                      $zones=array();
                     foreach ($dt["data"] as $key=>$z)
                     {
                          if ($cat) {
                             IPS_LogMessage("Visonic DEBUG", "Create Zone: ".$z["name"]." key: ".$key." in $cat");
                             $id=$this->CreateVariable($z["name"], 1, 0, "VisonicZone".$key, $cat);
-                            IPS_SetVariableCustomProfile($id,"VisonicZoneProfile");
+                             $idb=$this->CreateVariable($z["name"], 1, 0, "VisonicZoneBattery".$key, $bat);
+
+                             IPS_SetVariableCustomProfile($id,"VisonicZoneProfile");
+                             IPS_SetVariableCustomProfile($idb,"VisonicZoneBatteryProfile");
+
                          }
                          $this->zones[$key]=$z["name"];
                     }
