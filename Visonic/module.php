@@ -418,7 +418,7 @@ class VisonicAlarmDevice extends IPSModule
                            IPS_LogMessage("Visonic DEBUG", "got ID for ZOne ".$sid);
                            $b=GetValue($sid);
                            IPS_LogMessage("Visonic DEBUG", "status nu: ".$b." new: ".$dt["battery"]);
-                           if ($b!=$dt["status"]) {
+                           if ($b!=$dt["battery"]) {
                                SetValue($sid, $dt["battery"]);
                                if ($dt["battery"]>0)
                                {
