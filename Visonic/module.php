@@ -226,8 +226,8 @@ class VisonicAlarmDevice extends IPSModule
        If  ( !IPS_VariableProfileExists ( "VisonicZoneBatteryProfile" ) )
        {
            IPS_CreateVariableProfile("VisonicZoneBatteryProfile",1);
-           IPS_SetVariableProfileAssociation("VisonicZoneBatteryProfile",0,"Leeg","",-1);
-           IPS_SetVariableProfileAssociation("VisonicZoneBatteryProfile",1,"Vol","",-1);
+           IPS_SetVariableProfileAssociation("VisonicZoneBatteryProfile",0,"Vol","",-1);
+           IPS_SetVariableProfileAssociation("VisonicZoneBatteryProfile",1,"Leeg","",-1);
 
        }
 
