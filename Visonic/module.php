@@ -408,6 +408,27 @@ class VisonicAlarmDevice extends IPSModule
                                SetValue($sid, $dt["status"]);
                            }
                        }
+                   } elseif (isset($dt["battery"])) {
+                       IPS_LogMessage("Visonic DEBUG", "Zone: ".$dt["id"]." Battery: ".$dt["battery"]);
+
+                       $id=@IPS_GetObjectIDByIdent("VisonicZoneBattery", $this->InstanceID);
+                       $sid=@IPS_GetObjectIDByIdent("VisonicZoneBattery".$dt["id"], $id);
+                       //IPS_LogMessage("Visonic DEBUG", "ident $sid");
+                       if ($sid !== false) {
+                           IPS_LogMessage("Visonic DEBUG", "got ID for ZOne ".$sid);
+                           $b=GetValue($sid);
+                           IPS_LogMessage("Visonic DEBUG", "status nu: ".$b." new: ".$dt["battery"]);
+                           if ($b!=$dt["status"]) {
+                               SetValue($sid, $dt["battery"]);
+                               if ($dt["battery"]>0)
+                               {
+                                   $z=$dt["id"];
+                                   $zone=$this->zones[$z];
+
+                                   $this->sendPushoverMessage("<b>Battery bijna leeg.</b>Battewry is bijna leeg in zone ".$zone."($z)!!",0,"");
+                               }
+                           }
+                       }
                    } else {
                        //IPS_LogMessage("Visonic DEBUG", "Zone: Unknown action => ".$dt["id"]);
                    }
