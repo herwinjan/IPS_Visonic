@@ -409,7 +409,7 @@ class VisonicAlarmDevice extends IPSModule
                            }
                        }
                    } else {
-                       IPS_LogMessage("Visonic DEBUG", "Zone: Unknown action => ".$dt["id"]);
+                       //IPS_LogMessage("Visonic DEBUG", "Zone: Unknown action => ".$dt["id"]);
                    }
                    break;
                    default:
