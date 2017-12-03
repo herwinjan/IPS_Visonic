@@ -194,7 +194,7 @@ class VisonicAlarmDevice extends IPSModule
        $this->RegisterPropertyString("UserToken", "");
        $this->RegisterPropertyString("ProgToken", "");
        $this->RegisterPropertyString("debug", false);
-
+       $this->debug=$this->ReadPropertyString("debug");
 
 
        IPS_LogMessage("Visonic DEBUG", "Create!");
@@ -267,6 +267,8 @@ class VisonicAlarmDevice extends IPSModule
        $this->debug=$this->ReadPropertyString("debug");
 
        IPS_LogMessage("Visonic PID", IPS_GetProperty($this->ParentID, 'Open'));
+       IPS_LogMessage("Visonic Debug", "Debug turned ".$this->debug==true?"on":"off");
+
        $this->RegisterMessage($this->InstanceID, DM_CONNECT);
        $this->RegisterMessage($this->InstanceID, DM_DISCONNECT);
 
