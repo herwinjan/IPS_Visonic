@@ -193,7 +193,7 @@ class VisonicAlarmDevice extends IPSModule
 
        $this->RegisterPropertyString("UserToken", "");
        $this->RegisterPropertyString("ProgToken", "");
-       $this->RegisterPropertyString("debug", false);
+       $this->RegisterPropertyBoolean("debug", false);
        $this->debug=$this->ReadPropertyBoolean("debug");
 
 
