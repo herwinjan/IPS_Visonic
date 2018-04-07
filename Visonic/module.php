@@ -165,6 +165,7 @@ class VisonicAlarmDevice extends IPSModule
     public $zones=array();
     private $usertoken="";
     private $progtoken="";
+    private $debug=false;
 
 
    // The constructor of the module
@@ -192,6 +193,8 @@ class VisonicAlarmDevice extends IPSModule
 
        $this->RegisterPropertyString("UserToken", "");
        $this->RegisterPropertyString("ProgToken", "");
+       $this->RegisterPropertyBoolean("debug", false);
+       $this->debug=$this->ReadPropertyBoolean("debug");
 
 
        IPS_LogMessage("Visonic DEBUG", "Create!");
@@ -223,6 +226,13 @@ class VisonicAlarmDevice extends IPSModule
           IPS_SetVariableProfileAssociation("VisonicControlProfile",5,"Ingeschakelen (Weg)","",-1);
 
       }
+       If  ( !IPS_VariableProfileExists ( "VisonicZoneBatteryProfile" ) )
+       {
+           IPS_CreateVariableProfile("VisonicZoneBatteryProfile",1);
+           IPS_SetVariableProfileAssociation("VisonicZoneBatteryProfile",0,"Vol","",-1);
+           IPS_SetVariableProfileAssociation("VisonicZoneBatteryProfile",1,"Leeg","",-1);
+
+       }
 
 //CreateVariable($Name, $Type, $Value, $Ident = '', $ParentID = 0)
        $id=$this->CreateVariable("Alarm Status",1,0,"VisonicStatus",$this->InstanceID);
@@ -254,8 +264,11 @@ class VisonicAlarmDevice extends IPSModule
 
       // $this->usertoken=$this->ReadPropertyString("UserToken");
       // $this->progtoken=$this->ReadPropertyString("ProgToken");
+       $this->debug=$this->ReadPropertyBoolean("debug");
 
        IPS_LogMessage("Visonic PID", IPS_GetProperty($this->ParentID, 'Open'));
+       IPS_LogMessage("Visonic Debug", "Debug turned ".$this->debug==true?"on":"off");
+
        $this->RegisterMessage($this->InstanceID, DM_CONNECT);
        $this->RegisterMessage($this->InstanceID, DM_DISCONNECT);
 
@@ -281,11 +294,11 @@ class VisonicAlarmDevice extends IPSModule
     {
         //            $this->debug(__FUNCTION__,"entered");
         $id=$SenderID;
-        IPS_LogMessage("Visonic DEBUG", "TS: $TimeStamp SenderID ".$SenderID." with MessageID ".$Message." Data: ".print_r($Data, true));
+        if ($this->debug) IPS_LogMessage("Visonic DEBUG", "TS: $TimeStamp SenderID ".$SenderID." with MessageID ".$Message." Data: ".print_r($Data, true));
         switch ($Message) {
 
             default:
-                IPS_LogMessage(__CLASS__, __FUNCTION__." Unknown Message $Message");
+                if ($this->debug) IPS_LogMessage(__CLASS__, __FUNCTION__." Unknown Message $Message");
                 break;
         }
     }
@@ -301,21 +314,28 @@ class VisonicAlarmDevice extends IPSModule
             switch ($dt["action"]) {
                   case "zones":
                     print_r($dt["data"]);
-                    IPS_LogMessage("Visonic DEBUG", "got zone ".$dt["data"][1]["name"]);
+                      if ($this->debug) IPS_LogMessage("Visonic DEBUG", "got zone ".$dt["data"][1]["name"]);
                     $cat=$this->CreateCategory("Zones", "VisonicZones", $this->InstanceID);
-                    $zones=array();
+                    $bat=$this->CreateCategory("Battery", "VisonicZoneBattery", $this->InstanceID);
+
+
+                      $zones=array();
                     foreach ($dt["data"] as $key=>$z)
                     {
                          if ($cat) {
-                            IPS_LogMessage("Visonic DEBUG", "Create Zone: ".$z["name"]." key: ".$key." in $cat");
+                             if ($this->debug) IPS_LogMessage("Visonic DEBUG", "Create Zone: ".$z["name"]." key: ".$key." in $cat");
                             $id=$this->CreateVariable($z["name"], 1, 0, "VisonicZone".$key, $cat);
-                            IPS_SetVariableCustomProfile($id,"VisonicZoneProfile");
+                             $idb=$this->CreateVariable($z["name"], 1, 0, "VisonicZoneBattery".$key, $bat);
+
+                             IPS_SetVariableCustomProfile($id,"VisonicZoneProfile");
+                             IPS_SetVariableCustomProfile($idb,"VisonicZoneBatteryProfile");
+
                          }
                          $this->zones[$key]=$z["name"];
                     }
                     break;
                    case "ping":
-                    IPS_LogMessage("Visonic DEBUG", "got ping!");
+                       if ($this->debug) IPS_LogMessage("Visonic DEBUG", "got ping!");
                     break;
                    case "state":
                     $sid=@IPS_GetObjectIDByIdent("VisonicStatus", $this->InstanceID);
@@ -330,7 +350,7 @@ class VisonicAlarmDevice extends IPSModule
                              SetValue($sid, $dt["data"]);
                          }
                     }
-                   IPS_LogMessage("Visonic DEBUG", "State ".$dt["data"]);
+                       if ($this->debug) IPS_LogMessage("Visonic DEBUG", "State ".$dt["data"]);
                    break;
                    case "zonestate":
                    break;
@@ -355,7 +375,7 @@ class VisonicAlarmDevice extends IPSModule
                         }
                    break;
                    case "flag":
-                   IPS_LogMessage("Visonic DEBUG", "Flag ".$dt["data"]);
+                       if ($this->debug) IPS_LogMessage("Visonic DEBUG", "Flag ".$dt["data"]);
                    $this->flag=$dt["data"];
 
                    $int = $dt["data"];
@@ -381,25 +401,46 @@ class VisonicAlarmDevice extends IPSModule
                    case "zonestatus":
 
                    if (isset($dt["status"])) {
-                       IPS_LogMessage("Visonic DEBUG", "Zone: ".$dt["id"]." status: ".$dt["status"]);
+                       if ($this->debug) IPS_LogMessage("Visonic DEBUG", "Zone: ".$dt["id"]." status: ".$dt["status"]);
 
                        $id=@IPS_GetObjectIDByIdent("VisonicZones", $this->InstanceID);
                        $sid=@IPS_GetObjectIDByIdent("VisonicZone".$dt["id"], $id);
-                       IPS_LogMessage("Visonic DEBUG", "ident $sid");
+                       if ($this->debug) IPS_LogMessage("Visonic DEBUG", "ident $sid");
                        if ($sid !== false) {
-                           IPS_LogMessage("Visonic DEBUG", "got ID for ZOne ".$sid);
+                           if ($this->debug) IPS_LogMessage("Visonic DEBUG", "got ID for ZOne ".$sid);
                            $b=GetValue($sid);
-                           IPS_LogMessage("Visonic DEBUG", "status nu: ".$b." new: ".$dt["status"]);
+                           if ($this->debug) IPS_LogMessage("Visonic DEBUG", "status nu: ".$b." new: ".$dt["status"]);
                            if ($b!=$dt["status"]) {
                                SetValue($sid, $dt["status"]);
                            }
                        }
+                   } elseif (isset($dt["battery"])) {
+                       if ($this->debug) IPS_LogMessage("Visonic DEBUG", "Zone: ".$dt["id"]." Battery: ".$dt["battery"]);
+
+                       $id=@IPS_GetObjectIDByIdent("VisonicZoneBattery", $this->InstanceID);
+                       $sid=@IPS_GetObjectIDByIdent("VisonicZoneBattery".$dt["id"], $id);
+                       //IPS_LogMessage("Visonic DEBUG", "ident $sid");
+                       if ($sid !== false) {
+                           if ($this->debug) IPS_LogMessage("Visonic DEBUG", "got ID for ZOne ".$sid);
+                           $b=GetValue($sid);
+                           if ($this->debug) IPS_LogMessage("Visonic DEBUG", "status nu: ".$b." new: ".$dt["battery"]);
+                           if ($b!=$dt["battery"]) {
+                               SetValue($sid, $dt["battery"]);
+                               if ($dt["battery"]>0)
+                               {
+                                   $z=$dt["id"];
+                                   $zone=$this->zones[$z];
+
+                                   $this->sendPushoverMessage("<b>Battery bijna leeg.</b>Battewry is bijna leeg in zone ".$zone."($z)!!",0,"");
+                               }
+                           }
+                       }
                    } else {
-                       IPS_LogMessage("Visonic DEBUG", "Zone: Unknown action => ".$dt["id"]);
+                       if ($this->debug) IPS_LogMessage("Visonic DEBUG", "Zone: Unknown action => ".$dt["id"]);
                    }
                    break;
                    default:
-                    IPS_LogMessage("Visonic DEBUG", "unknown action: ".utf8_decode($dt["data"]));
+                       if ($this->debug) IPS_LogMessage("Visonic DEBUG", "unknown action: ".utf8_decode($dt["data"]));
              }
         }
 
@@ -498,7 +539,7 @@ class VisonicAlarmDevice extends IPSModule
    public function setStatus($status)
    {
        // Self-definedCode
-       IPS_LogMessage("Visonic", "Set Status to $status");
+       if ($this->debug) IPS_LogMessage("Visonic", "Set Status to $status");
        $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => "$status")));
 
    }

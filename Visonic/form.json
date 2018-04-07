@@ -2,6 +2,8 @@
 	"elements":
 	[
 		{ "name": "UserToken", "type": "ValidationTextBox", "caption": "User Token" },
-		{ "name": "ProgToken", "type": "ValidationTextBox", "caption": "Program Token" }
+		{ "name": "ProgToken", "type": "ValidationTextBox", "caption": "Program Token" },
+		{ "name": "debug", "type": "CheckBox", "caption": "Debug commands" }
+
 	]
 }
