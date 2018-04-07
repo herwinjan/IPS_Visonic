@@ -187,7 +187,6 @@ class VisonicAlarmDevice extends IPSModule
        $this->RequireParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
        $this->ConnectParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
       // $this->RegisterMessage(0, 'DM_CONNECT');
-
        $this->RegisterMessage(0, 10503);
        $this->RegisterMessage(0, 11101);
 
