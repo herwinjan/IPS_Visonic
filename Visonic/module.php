@@ -186,8 +186,9 @@ class VisonicAlarmDevice extends IPSModule
 
        $this->RequireParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
        $this->ConnectParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
-       $this->RegisterMessage(0, DM_CONNECT);
+      // $this->RegisterMessage(0, 'DM_CONNECT');
        $this->RegisterMessage(0, 10503);
+       $this->RegisterMessage(0, 10504);
        $this->RegisterMessage(0, 11101);
 
 
@@ -269,8 +270,8 @@ class VisonicAlarmDevice extends IPSModule
        IPS_LogMessage("Visonic PID", IPS_GetProperty($this->ParentID, 'Open'));
        IPS_LogMessage("Visonic Debug", "Debug turned ".$this->debug==true?"on":"off");
 
-       $this->RegisterMessage($this->InstanceID, DM_CONNECT);
-       $this->RegisterMessage($this->InstanceID, DM_DISCONNECT);
+       $this->RegisterMessage($this->InstanceID, 10503);
+       $this->RegisterMessage($this->InstanceID, 10504);
 
        //$this->RegisterMessage(0, 10100 );
    }
