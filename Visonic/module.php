@@ -369,6 +369,7 @@ class VisonicAlarmDevice extends IPSModule
                                    $this->alarm=true;
                                    IPS_LogMessage("Visonic DEBUG", "ALARM GAAT AF!!");
                                    $zone=$this->zones[$z];
+                                   
                                    $this->sendPushoverMessage("<b>Alarm gaat af!!!</b>Alarm in zone ".$zone."($z)!!",2,"siren");
                              }
                         }
