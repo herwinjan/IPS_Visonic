@@ -432,9 +432,10 @@ class VisonicAlarmDevice extends IPSModule
                                if ($dt["battery"]>0)
                                {
                                    $z=$dt["id"];
-                                   $zone=$this->zones[$z];
+                                   
+                                   $zone=IPS_GetObjectIDByIdent("VisonicZone".$z);
 
-                                   $this->sendPushoverMessage("<b>Battery bijna leeg.</b>Battewry is bijna leeg in zone ".$zone."($z)!!",0,"");
+                                   $this->sendPushoverMessage("<b>Battery bijna leeg.</b>Battery is bijna leeg in zone ".$zone["ObjectName"]." ($z)!!",0,"");
                                }
                            }
                        }
