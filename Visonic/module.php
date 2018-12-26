@@ -1,5 +1,4 @@
 <?php
-//
 
 if (@constant('IPS_BASE') == null) { //Nur wenn Konstanten noch nicht bekannt sind.
     define('IPS_BASE', 10000); //Base Message
@@ -235,14 +234,7 @@ class VisonicAlarmDevice extends IPSModule
         $id = $this->CreateVariable("Alarm Control", 1, 0, "VisonicControl", $this->InstanceID);
         IPS_SetVariableCustomProfile($id, "VisonicControlProfile");
         $this->EnableAction("VisonicControl");
-        //IPS_SetVariableCustomAction()
 
-        //  $sid=@IPS_GetObjectIDByIdent("VisonicAlarmStatus", 0);
-        //       if ($sid==false) {
-        //           $this->RegisterVariableInteger("VisonicAlarmStatus", "Status", "", 0);
-        //           $this->RegisterVariableInteger("VisonicAlarmFlag", "Flag", "", 0);
-        //       } else {
-        //       }
         return true;
     }
 
