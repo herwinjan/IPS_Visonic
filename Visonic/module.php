@@ -180,7 +180,7 @@ class VisonicAlarmDevice extends IPSModule
         $sid = @IPS_GetObjectIDByIdent("VisonicZone" . $z, $id);
         $zone = @IPS_GetObject($ids);
        
-        IPS_LogMessage("Visonic DEBUG", "Debug! -> id -> " . $id . " -> sid -> " . $sid . " -> " . sprintf($zone) );
+        IPS_LogMessage("Visonic DEBUG", "Debug! -> id -> " . $id . " -> sid -> " . $sid . " -> " . print_r($zone) );
 
         // Self-service code
     }
