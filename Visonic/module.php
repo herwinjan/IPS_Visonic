@@ -198,7 +198,7 @@ class VisonicAlarmDevice extends IPSModule
        $this->debug=$this->ReadPropertyBoolean("debug");
 
 
-       IPS_LogMessage("Visonic DEBUG", "Create!");
+       IPS_LogMessage("Visonic DEBUG", "Create! -> ".InstanceID);
 
       If  ( !IPS_VariableProfileExists ( "VisonicStatusProfile" ) )
       {
@@ -325,7 +325,7 @@ class VisonicAlarmDevice extends IPSModule
                     {
                          if ($cat) {
                              if ($this->debug) IPS_LogMessage("Visonic DEBUG", "Create Zone: ".$z["name"]." key: ".$key." in $cat");
-                            $id=$this->CreateVariable($z["name"], 1, 0, "VisonicZone".$key, $cat);
+                             $id=$this->CreateVariable($z["name"], 1, 0, "VisonicZone".$key, $cat);
                              $idb=$this->CreateVariable($z["name"], 1, 0, "VisonicZoneBattery".$key, $bat);
 
                              IPS_SetVariableCustomProfile($id,"VisonicZoneProfile");
