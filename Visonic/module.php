@@ -172,16 +172,6 @@ class VisonicAlarmDevice extends IPSModule
     {
         // Do not delete this row
         parent::__construct($InstanceID);
-
-        IPS_LogMessage("Visonic DEBUG", "Online! -> " . $InstanceID);
-        $z=11;
-        $id = @IPS_GetObjectIDByIdent("VisonicZones", $InstanceID);
-        $sid = @IPS_GetObjectIDByIdent("VisonicZone" . $z, $id);
-        IPS_LogMessage("Visonic DEBUG","id: ". $id." did: ".$sid);
-        $zone = @IPS_GetObject($sid);
-        $ar=print_r($zone,true);
-        print_r($zone);
-        IPS_LogMessage("Visonic DEBUG","Array: -> ".$ar);
        
         // Self-service code
     }
