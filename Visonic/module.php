@@ -174,14 +174,13 @@ class VisonicAlarmDevice extends IPSModule
         parent::__construct($InstanceID);
 
         IPS_LogMessage("Visonic DEBUG", "Online! -> " . $InstanceID);
-        IPS_LogMessage("Visonic DEBUG", "This! -> " . $this->$InstanceID);
         $z=11;
         $id = @IPS_GetObjectIDByIdent("VisonicZones", $this->InstanceID);
         $sid = @IPS_GetObjectIDByIdent("VisonicZone" . $z, $id);
         $zone = @IPS_GetObject($ids);
+        $ar=print_r($zone,true);
+        IPS_LogMessage("Visonic DEBUG","Array: -> ".$ar);
        
-        IPS_LogMessage("Visonic DEBUG", "Debug! -> id -> " . $id . " -> sid -> " . $sid . " -> " . print_r($zone,true) );
-
         // Self-service code
     }
 
@@ -203,7 +202,7 @@ class VisonicAlarmDevice extends IPSModule
         $this->RegisterPropertyBoolean("debug", false);
         $this->debug = $this->ReadPropertyBoolean("debug");
 
-        IPS_LogMessage("Visonic DEBUG", "Create! -> " . InstanceID);
+        IPS_LogMessage("Visonic DEBUG", "Create! -> " . $this->InstanceID);
 
         if (!IPS_VariableProfileExists("VisonicStatusProfile")) {
             IPS_CreateVariableProfile("VisonicStatusProfile", 1);
