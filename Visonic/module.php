@@ -172,13 +172,13 @@ class VisonicAlarmDevice extends IPSModule
     {
         // Do not delete this row
         parent::__construct($InstanceID);
-        $this->InstanceID=$InstanceID;
 
         IPS_LogMessage("Visonic DEBUG", "Online! -> " . $InstanceID);
         $z=11;
         $id = @IPS_GetObjectIDByIdent("VisonicZones", $InstanceID);
         $sid = @IPS_GetObjectIDByIdent("VisonicZone" . $z, $id);
-        $zone = @IPS_GetObject($ids);
+        IPS_LogMessage("Visonic DEBUG","id: ". $id." did: ".$sid);
+        $zone = @IPS_GetObject($sid);
         $ar=print_r($zone,true);
         print_r($zone);
         IPS_LogMessage("Visonic DEBUG","Array: -> ".$ar);
@@ -382,7 +382,7 @@ class VisonicAlarmDevice extends IPSModule
                             IPS_LogMessage("Visonic DEBUG", "ALARM GAAT AF!!");
                             $id = @IPS_GetObjectIDByIdent("VisonicZones", $this->InstanceID);
                             $sid = @IPS_GetObjectIDByIdent("VisonicZone" . $z, $id);
-                            $zone = @IPS_GetObject($ids);
+                            $zone = @IPS_GetObject($sid);
                             $this->sendPushoverMessage("<b>Alarm gaat af!!!</b>Alarm in zone " . $zone["ObjectName"] . " ($z)!!", 2, "siren");
                         }
                     } else {
@@ -468,7 +468,7 @@ class VisonicAlarmDevice extends IPSModule
 
                                     $id = @IPS_GetObjectIDByIdent("VisonicZones", $this->InstanceID);
                                     $sid = @IPS_GetObjectIDByIdent("VisonicZone" . $z, $id);
-                                    $zone = @IPS_GetObject($ids);
+                                    $zone = @IPS_GetObject($sid);
 
                                     $this->sendPushoverMessage("<b>Battery bijna leeg.</b>Battery is bijna leeg in zone " . $zone["ObjectName"] . " ($z)!!", 0, "");
                                 }
