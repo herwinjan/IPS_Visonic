@@ -97,7 +97,7 @@ trait InstanceStatus
      *
      * @access private
      */
-    protected function GetParentData()
+    protected function _GetParentData()
     {
         $OldParentId = $this->Parent;
         $ParentId = @IPS_GetInstance($this->InstanceID)['ConnectionID'];
@@ -119,7 +119,7 @@ trait InstanceStatus
      * @access protected
      * @param int $InstanceStatus
      */
-    protected function SetStatus($InstanceStatus)
+    protected function _SetStatus($InstanceStatus)
     {
         if ($InstanceStatus != IPS_GetInstance($this->InstanceID)['InstanceStatus']) {
             parent::SetStatus($InstanceStatus);
@@ -131,7 +131,7 @@ trait InstanceStatus
      * @access protected
      * @return bool True wenn Parent vorhanden und in Status 102, sonst false.
      */
-    protected function HasActiveParent()
+    protected function _HasActiveParent()
     {
         $instance = @IPS_GetInstance($this->InstanceID);
         if ($instance['ConnectionID'] > 0) {
@@ -161,9 +161,9 @@ class VisonicAlarmDevice extends IPSModule
     public $flag = 0;
     public $alarm = false;
     public $zones = array();
-    private $usertoken = "";
-    private $progtoken = "";
-    private $debug = false;
+    private $__usertoken = "";
+    private $__progtoken = "";
+    private $__debug = false;
 
     // The constructor of the module
     // Overrides the default constructor of IPS
@@ -171,7 +171,7 @@ class VisonicAlarmDevice extends IPSModule
     {
         // Do not delete this row
         parent::__construct($InstanceID);
-       
+
         // Self-service code
     }
 
@@ -307,18 +307,18 @@ class VisonicAlarmDevice extends IPSModule
                         IPS_LogMessage("Visonic DEBUG", "got zone " . $dt["data"][1]["name"]);
                     }
 
-                    $cat = $this->CreateCategory("Zones", "VisonicZones", $this->InstanceID);
-                    $bat = $this->CreateCategory("Battery", "VisonicZoneBattery", $this->InstanceID);
+                    $cat = $this->__CreateCategory("Zones", "VisonicZones", $this->InstanceID);
+                    $bat = $this->__CreateCategory("Battery", "VisonicZoneBattery", $this->InstanceID);
 
                     $zones = array();
                     foreach ($dt["data"] as $key => $z) {
                         if ($cat) {
-                            if ($this->debug) {
-                                IPS_LogMessage("Visonic DEBUG", "Create Zone: " . $z["name"] . " key: " . $key . " in $cat");
-                            }
+                            //if ($this->debug) {
+                            IPS_LogMessage("Visonic DEBUG", "Create Zone: " . $z["name"] . " key: " . $key . " in $cat");
+                            //}
 
-                            $id = $this->CreateVariable($z["name"], 1, 0, "VisonicZone" . $key, $cat);
-                            $idb = $this->CreateVariable($z["name"], 1, 0, "VisonicZoneBattery" . $key, $bat);
+                            $id = $this->__CreateVariable($z["name"], 1, 0, "VisonicZone" . $key, $cat);
+                            $idb = $this->__CreateVariable($z["name"], 1, 0, "VisonicZoneBattery" . $key, $bat);
 
                             IPS_SetVariableCustomProfile($id, "VisonicZoneProfile");
                             IPS_SetVariableCustomProfile($idb, "VisonicZoneBatteryProfile");
@@ -480,7 +480,7 @@ class VisonicAlarmDevice extends IPSModule
     IPS_LogMessage("Visonic FRWD", utf8_decode($data->Buffer));
     return "String data for the device instance!";
     }*/
-    private function CreateCategory($Name, $Ident = '', $ParentID = 0)
+    private function __CreateCategory($Name, $Ident = '', $ParentID = 0)
     {
         $RootCategoryID = $this->InstanceID;
         echo "CreateCategory: ( $Name, $Ident, $ParentID ) \n";
@@ -505,7 +505,7 @@ class VisonicAlarmDevice extends IPSModule
         return $CatID;
     }
 
-    private function CreateVariable($Name, $Type, $Value, $Ident = '', $ParentID = 0)
+    private function __CreateVariable($Name, $Type, $Value, $Ident = '', $ParentID = 0)
     {
         //echo "CreateVariable: ( $Name, $Type, $Value, $Ident, $ParentID ) \n";
         if ('' != $Ident) {
@@ -536,7 +536,7 @@ class VisonicAlarmDevice extends IPSModule
         return $VarID;
     }
 
-    private function SetVariable($VarID, $Type, $Value)
+    private function __SetVariable($VarID, $Type, $Value)
     {
         switch ($Type) {
             case 0: // boolean
