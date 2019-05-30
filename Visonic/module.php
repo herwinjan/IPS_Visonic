@@ -227,11 +227,11 @@ class VisonicAlarmDevice extends IPSModule
         }
 
 //CreateVariable($Name, $Type, $Value, $Ident = '', $ParentID = 0)
-        $id = $this->CreateVariable("Alarm Status", 1, 0, "VisonicStatus", $this->InstanceID);
+        $id = $this->__CreateVariable("Alarm Status", 1, 0, "VisonicStatus", $this->InstanceID);
         IPS_SetVariableCustomProfile($id, "VisonicStatusProfile");
-        $id = $this->CreateVariable("Alarm Mededeling", 3, 0, "VisonicFlag", $this->InstanceID);
+        $id = $this->__CreateVariable("Alarm Mededeling", 3, 0, "VisonicFlag", $this->InstanceID);
 
-        $id = $this->CreateVariable("Alarm Control", 1, 0, "VisonicControl", $this->InstanceID);
+        $id = $this->__CreateVariable("Alarm Control", 1, 0, "VisonicControl", $this->InstanceID);
         IPS_SetVariableCustomProfile($id, "VisonicControlProfile");
         $this->EnableAction("VisonicControl");
 
