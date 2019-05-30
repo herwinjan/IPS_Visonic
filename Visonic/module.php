@@ -235,6 +235,10 @@ class VisonicAlarmDevice extends IPSModule
         IPS_SetVariableCustomProfile($id, "VisonicControlProfile");
         $this->EnableAction("VisonicControl");
 
+// $this->__usertoken=$this->ReadPropertyString("UserToken");
+        // $this->__progtoken=$this->ReadPropertyString("ProgToken");
+        $this->__debug = $this->ReadPropertyBoolean("debug");
+
         return true;
     }
 
@@ -302,22 +306,22 @@ class VisonicAlarmDevice extends IPSModule
         if (isset($dt)) {
             switch ($dt["action"]) {
                 case "zones":
-                    IPS_LogMessage("Visonic DEBUG", $dt["data"]);
-                    //if ($this->__debug) {
-                    IPS_LogMessage("Visonic DEBUG", "got zone " . $dt["data"][1]["name"]);
-                    //}
+                    //IPS_LogMessage("Visonic DEBUG", $dt["data"]);
+                    if ($this->__debug) {
+                        IPS_LogMessage("Visonic DEBUG", "got zone " . $dt["data"][1]["name"]);
+                    }
 
                     $cat = $this->__CreateCategory("Zones", "VisonicZones", $this->InstanceID);
                     $bat = $this->__CreateCategory("Battery", "VisonicZoneBattery", $this->InstanceID);
 
-                    IPS_LogMessage("Visonic DEBUG", "Category $cat");
+                    //IPS_LogMessage("Visonic DEBUG", "Category $cat");
 
                     $zones = array();
                     foreach ($dt["data"] as $key => $z) {
                         if ($cat) {
-                            //if ($this->__debug) {
-                            IPS_LogMessage("Visonic DEBUG", "Create Zone: " . $z["name"] . " key: " . $key . " in $cat");
-                            //}
+                            if ($this->__debug) {
+                                IPS_LogMessage("Visonic DEBUG", "Create Zone: " . $z["name"] . " key: " . $key . " in $cat");
+                            }
 
                             $id = $this->__CreateVariable($z["name"], 1, 0, "VisonicZone" . $key, $cat);
                             $idb = $this->__CreateVariable($z["name"], 1, 0, "VisonicZoneBattery" . $key, $bat);
