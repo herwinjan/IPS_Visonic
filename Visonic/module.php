@@ -303,12 +303,14 @@ class VisonicAlarmDevice extends IPSModule
             switch ($dt["action"]) {
                 case "zones":
                     print_r($dt["data"]);
-                    if ($this->__debug) {
-                        IPS_LogMessage("Visonic DEBUG", "got zone " . $dt["data"][1]["name"]);
-                    }
+                    //if ($this->__debug) {
+                    IPS_LogMessage("Visonic DEBUG", "got zone " . $dt["data"][1]["name"]);
+                    //}
 
                     $cat = $this->__CreateCategory("Zones", "VisonicZones", $this->InstanceID);
                     $bat = $this->__CreateCategory("Battery", "VisonicZoneBattery", $this->InstanceID);
+
+                    IPS_LogMessage("Visonic DEBUG", "Category $cat");
 
                     $zones = array();
                     foreach ($dt["data"] as $key => $z) {
