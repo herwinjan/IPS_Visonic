@@ -244,7 +244,7 @@ class VisonicAlarmDevice extends IPSModule
         // Do not delete this line
         IPS_LogMessage("Visonic DEBUG", "Apply changes!");
         parent::ApplyChanges();
-        $this->ParentID = $this->__GetParentData();
+        $this->ParentID = $this->_GetParentData();
         IPS_LogMessage("Visonic PID", $this->ParentID);
 
         // $this->__usertoken=$this->ReadPropertyString("UserToken");
