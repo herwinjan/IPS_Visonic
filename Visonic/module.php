@@ -483,7 +483,7 @@ class VisonicAlarmDevice extends IPSModule
     private function __CreateCategory($Name, $Ident = '', $ParentID = 0)
     {
         $RootCategoryID = $this->InstanceID;
-        echo "CreateCategory: ( $Name, $Ident, $ParentID ) \n";
+        IPS_LogMessage("Visonic DEBUG", "CreateCategory: ( $Name, $Ident, $ParentID ) \n");
         if ('' != $Ident) {
             $CatID = @IPS_GetObjectIDByIdent($Ident, $ParentID);
             if (false !== $CatID) {
@@ -507,7 +507,7 @@ class VisonicAlarmDevice extends IPSModule
 
     private function __CreateVariable($Name, $Type, $Value, $Ident = '', $ParentID = 0)
     {
-        //echo "CreateVariable: ( $Name, $Type, $Value, $Ident, $ParentID ) \n";
+        IPS_LogMessage("Visonic DEBUG", "CreateVariable: ( $Name, $Type, $Value, $Ident, $ParentID ) \n");
         if ('' != $Ident) {
             $VarID = @IPS_GetObjectIDByIdent($Ident, $ParentID);
             if (false !== $VarID) {
