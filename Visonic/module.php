@@ -191,7 +191,7 @@ class VisonicAlarmDevice extends IPSModule
         $this->RegisterPropertyString("UserToken", "");
         $this->RegisterPropertyString("ProgToken", "");
         $this->RegisterPropertyBoolean("debug", false);
-        $this->debug = $this->ReadPropertyBoolean("debug");
+        $this->__debug = $this->ReadPropertyBoolean("debug");
 
         IPS_LogMessage("Visonic DEBUG", "Create! -> " . $this->InstanceID);
 
@@ -247,12 +247,12 @@ class VisonicAlarmDevice extends IPSModule
         $this->ParentID = $this->__GetParentData();
         IPS_LogMessage("Visonic PID", $this->ParentID);
 
-        // $this->usertoken=$this->ReadPropertyString("UserToken");
-        // $this->progtoken=$this->ReadPropertyString("ProgToken");
-        $this->debug = $this->ReadPropertyBoolean("debug");
+        // $this->__usertoken=$this->ReadPropertyString("UserToken");
+        // $this->__progtoken=$this->ReadPropertyString("ProgToken");
+        $this->__debug = $this->ReadPropertyBoolean("debug");
 
         IPS_LogMessage("Visonic PID", IPS_GetProperty($this->ParentID, 'Open'));
-        IPS_LogMessage("Visonic Debug", "Debug turned " . $this->debug == true ? "on" : "off");
+        IPS_LogMessage("Visonic Debug", "Debug turned " . $this->__debug == true ? "on" : "off");
 
         $this->RegisterMessage($this->InstanceID, 10503);
         $this->RegisterMessage($this->InstanceID, 10504);
@@ -275,16 +275,16 @@ class VisonicAlarmDevice extends IPSModule
 
     public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
     {
-        //            $this->debug(__FUNCTION__,"entered");
+        //            $this->__debug(__FUNCTION__,"entered");
         $id = $SenderID;
-        if ($this->debug) {
+        if ($this->__debug) {
             IPS_LogMessage("Visonic DEBUG", "TS: $TimeStamp SenderID " . $SenderID . " with MessageID " . $Message . " Data: " . print_r($Data, true));
         }
 
         switch ($Message) {
 
             default:
-                if ($this->debug) {
+                if ($this->__debug) {
                     IPS_LogMessage(__CLASS__, __FUNCTION__ . " Unknown Message $Message");
                 }
 
@@ -303,7 +303,7 @@ class VisonicAlarmDevice extends IPSModule
             switch ($dt["action"]) {
                 case "zones":
                     print_r($dt["data"]);
-                    if ($this->debug) {
+                    if ($this->__debug) {
                         IPS_LogMessage("Visonic DEBUG", "got zone " . $dt["data"][1]["name"]);
                     }
 
@@ -313,7 +313,7 @@ class VisonicAlarmDevice extends IPSModule
                     $zones = array();
                     foreach ($dt["data"] as $key => $z) {
                         if ($cat) {
-                            //if ($this->debug) {
+                            //if ($this->__debug) {
                             IPS_LogMessage("Visonic DEBUG", "Create Zone: " . $z["name"] . " key: " . $key . " in $cat");
                             //}
 
@@ -328,7 +328,7 @@ class VisonicAlarmDevice extends IPSModule
                     }
                     break;
                 case "ping":
-                    if ($this->debug) {
+                    if ($this->__debug) {
                         IPS_LogMessage("Visonic DEBUG", "got ping!");
                     }
 
@@ -345,7 +345,7 @@ class VisonicAlarmDevice extends IPSModule
                             SetValue($sid, $dt["data"]);
                         }
                     }
-                    if ($this->debug) {
+                    if ($this->__debug) {
                         IPS_LogMessage("Visonic DEBUG", "State " . $dt["data"]);
                     }
 
@@ -372,7 +372,7 @@ class VisonicAlarmDevice extends IPSModule
                     }
                     break;
                 case "flag":
-                    if ($this->debug) {
+                    if ($this->__debug) {
                         IPS_LogMessage("Visonic DEBUG", "Flag " . $dt["data"]);
                     }
 
@@ -401,23 +401,23 @@ class VisonicAlarmDevice extends IPSModule
                 case "zonestatus":
 
                     if (isset($dt["status"])) {
-                        if ($this->debug) {
+                        if ($this->__debug) {
                             IPS_LogMessage("Visonic DEBUG", "Zone: " . $dt["id"] . " status: " . $dt["status"]);
                         }
 
                         $id = @IPS_GetObjectIDByIdent("VisonicZones", $this->InstanceID);
                         $sid = @IPS_GetObjectIDByIdent("VisonicZone" . $dt["id"], $id);
-                        if ($this->debug) {
+                        if ($this->__debug) {
                             IPS_LogMessage("Visonic DEBUG", "ident $sid");
                         }
 
                         if ($sid !== false) {
-                            if ($this->debug) {
+                            if ($this->__debug) {
                                 IPS_LogMessage("Visonic DEBUG", "got ID for ZOne " . $sid);
                             }
 
                             $b = GetValue($sid);
-                            if ($this->debug) {
+                            if ($this->__debug) {
                                 IPS_LogMessage("Visonic DEBUG", "status nu: " . $b . " new: " . $dt["status"]);
                             }
 
@@ -426,7 +426,7 @@ class VisonicAlarmDevice extends IPSModule
                             }
                         }
                     } elseif (isset($dt["battery"])) {
-                        if ($this->debug) {
+                        if ($this->__debug) {
                             IPS_LogMessage("Visonic DEBUG", "Zone: " . $dt["id"] . " Battery: " . $dt["battery"]);
                         }
 
@@ -434,12 +434,12 @@ class VisonicAlarmDevice extends IPSModule
                         $sid = @IPS_GetObjectIDByIdent("VisonicZoneBattery" . $dt["id"], $id);
                         //IPS_LogMessage("Visonic DEBUG", "ident $sid");
                         if ($sid !== false) {
-                            if ($this->debug) {
+                            if ($this->__debug) {
                                 IPS_LogMessage("Visonic DEBUG", "got ID for ZOne " . $sid);
                             }
 
                             $b = GetValue($sid);
-                            if ($this->debug) {
+                            if ($this->__debug) {
                                 IPS_LogMessage("Visonic DEBUG", "status nu: " . $b . " new: " . $dt["battery"]);
                             }
 
@@ -457,14 +457,14 @@ class VisonicAlarmDevice extends IPSModule
                             }
                         }
                     } else {
-                        if ($this->debug) {
+                        if ($this->__debug) {
                             IPS_LogMessage("Visonic DEBUG", "Zone: Unknown action => " . $dt["id"]);
                         }
 
                     }
                     break;
                 default:
-                    if ($this->debug) {
+                    if ($this->__debug) {
                         IPS_LogMessage("Visonic DEBUG", "unknown action: " . utf8_decode($dt["data"]));
                     }
 
@@ -564,7 +564,7 @@ class VisonicAlarmDevice extends IPSModule
     public function setStatus($status)
     {
         // Self-definedCode
-        if ($this->debug) {
+        if ($this->__debug) {
             IPS_LogMessage("Visonic", "Set Status to $status");
         }
 
@@ -574,15 +574,15 @@ class VisonicAlarmDevice extends IPSModule
 
     public function sendPushoverMessage(string $message, int $priority, string $sound
     ) {
-        $this->usertoken = $this->ReadPropertyString("UserToken");
-        $this->progtoken = $this->ReadPropertyString("ProgToken");
-        IPS_LogMessage("PushOver", "Send: $this->progtoken, $this->usertoken, $message, $priority, $sound");
+        $this->__usertoken = $this->ReadPropertyString("UserToken");
+        $this->__progtoken = $this->ReadPropertyString("ProgToken");
+        IPS_LogMessage("PushOver", "Send: $this->__progtoken, $this->__usertoken, $message, $priority, $sound");
         curl_setopt_array($ch = curl_init(), array(
             CURLOPT_URL => "https://api.pushover.net/1/messages.json",
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_POSTFIELDS => array(
-                "token" => $this->progtoken,
-                "user" => $this->usertoken,
+                "token" => $this->__progtoken,
+                "user" => $this->__usertoken,
                 "message" => $message,
                 "sound" => $sound,
                 "html" => 1,
