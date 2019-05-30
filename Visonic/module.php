@@ -511,7 +511,7 @@ class VisonicAlarmDevice extends IPSModule
         if ('' != $Ident) {
             $VarID = @IPS_GetObjectIDByIdent($Ident, $ParentID);
             if (false !== $VarID) {
-                $this->SetVariable($VarID, $Type, $Value);
+                $this->__SetVariable($VarID, $Type, $Value);
                 return $VarID;
             }
         }
@@ -521,7 +521,7 @@ class VisonicAlarmDevice extends IPSModule
             if (2 == $Obj['ObjectType']) { // is variable?
                 $Var = IPS_GetVariable($VarID);
                 if ($Type == $Var['VariableValue']['ValueType']) {
-                    $this->SetVariable($VarID, $Type, $Value);
+                    $this->__SetVariable($VarID, $Type, $Value);
                     return $VarID;
                 }
             }
@@ -532,7 +532,7 @@ class VisonicAlarmDevice extends IPSModule
         if ('' != $Ident) {
             IPS_SetIdent($VarID, $Ident);
         }
-        $this->SetVariable($VarID, $Type, $Value);
+        $this->__SetVariable($VarID, $Type, $Value);
         return $VarID;
     }
 
