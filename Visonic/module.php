@@ -302,7 +302,7 @@ class VisonicAlarmDevice extends IPSModule
         if (isset($dt)) {
             switch ($dt["action"]) {
                 case "zones":
-                    print_r($dt["data"]);
+                    IPS_LogMessage("Visonic DEBUG", $dt["data"]);
                     //if ($this->__debug) {
                     IPS_LogMessage("Visonic DEBUG", "got zone " . $dt["data"][1]["name"]);
                     //}
