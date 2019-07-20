@@ -567,7 +567,7 @@ class VisonicAlarmDevice extends IPSModule
      * ABC_MyFirstElement ($ id);
      *
      */
-    public function setStatus($status)
+    public function setStatus(int $status)
     {
         // Self-definedCode
         if ($this->__debug) {
