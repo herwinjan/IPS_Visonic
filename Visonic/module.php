@@ -269,7 +269,7 @@ class VisonicAlarmDevice extends IPSModule
 
         switch ($ident) {
             case "VisonicControl":
-                $this->setStatus($value);
+                $this->setVisonicStatus($value);
 
                 break;
             default:
@@ -567,7 +567,7 @@ class VisonicAlarmDevice extends IPSModule
      * ABC_MyFirstElement ($ id);
      *
      */
-    public function setStatus(int $status)
+    public function setVisonicStatus(int $status)
     {
         // Self-definedCode
         if ($this->__debug) {
