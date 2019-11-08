@@ -202,7 +202,7 @@ class VisonicAlarmDevice extends IPSModule
             IPS_SetVariableProfileAssociation("VisonicStatusProfile", 2, "Wegloop vertraging", "", -1);
             IPS_SetVariableProfileAssociation("VisonicStatusProfile", 3, "Binnekomst vertraging", "", -1);
             IPS_SetVariableProfileAssociation("VisonicStatusProfile", 4, "Ingeschakeld (Thuis)", "", -1);
-            IPS_SetVariableProfileAssociation("VisonicStatusProfile", 4, "Ingeschakeld (Weg)", "", -1);
+            IPS_SetVariableProfileAssociation("VisonicStatusProfile", 5, "Ingeschakeld (Weg)", "", -1);
 
         }
         if (!IPS_VariableProfileExists("VisonicZoneProfile")) {
