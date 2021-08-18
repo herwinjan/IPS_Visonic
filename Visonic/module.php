@@ -89,7 +89,7 @@ $stateFlags = array(
     128 => "Alarm!",
 );
 
-trait InstanceStatus {
+trait InstanceStatusVisonic {
     /**
      * Ermittelt den Parent und verwaltet die Einträge des Parent im MessageSink
      * Ermöglicht es das Statusänderungen des Parent empfangen werden können.
@@ -115,11 +115,11 @@ trait InstanceStatus {
      * Prüft vorher noch ob sich dieser vom aktuellen Status unterscheidet.
      *
      * @access protected
-     * @param int $InstanceStatus
+     * @param int $InstanceStatusVisonic
      */
-    protected function _SetStatus($InstanceStatus) {
-        if ($InstanceStatus != IPS_GetInstance($this->InstanceID)['InstanceStatus']) {
-            parent::SetStatus($InstanceStatus);
+    protected function _SetStatus($InstanceStatusVisonic) {
+        if ($InstanceStatusVisonic != IPS_GetInstance($this->InstanceID)['InstanceStatus']) {
+            parent::SetStatus($InstanceStatusVisonic);
         }
     }
     /**
@@ -148,7 +148,7 @@ trait InstanceStatus {
  */
 class VisonicAlarmDevice extends IPSModule {
     use
-        InstanceStatus;
+        InstanceStatusVisonic;
 
     public $Parent;
     public $ParentID;
