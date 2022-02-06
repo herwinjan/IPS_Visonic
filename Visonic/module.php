@@ -341,7 +341,7 @@ class VisonicAlarmDevice extends IPSModule
                     break;
                 case "state":
                     $sid = @IPS_GetObjectIDByIdent("VisonicStatus", $this->InstanceID);
-                    $this->satus = $dt["data"];
+                    $this->status = $dt["data"];
                     if ($sid) {
                         SetValue($sid, $dt["data"]);
                     }
