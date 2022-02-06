@@ -55,29 +55,7 @@ $systemState = array(
     0x0C => "Ready",
     0x0D => "Not Ready",
 );
-$zoneEventType = array(
-    0x00 => "None",
-    0x01 => "Tamper Alarm",
-    0x02 => "Tamper Restore",
-    0x03 => "Open",
-    0x04 => "Closed",
-    0x05 => "Violated (Motion)",
-    0x06 => "Panic Alarm",
-    0x07 => "RF Jamming",
-    0x08 => "Tamper Open",
-    0x09 => "Communication Failure",
-    0x0A => "Line Failure",
-    0x0B => "Fuse",
-    0x0C => "Not Active",
-    0x0D => "Low Battery",
-    0x0E => "AC Failure",
-    0x0F => "Fire Alarm",
-    0x10 => "Emergency",
-    0x11 => "Siren Tamper",
-    0x12 => "Siren Tamper Restore",
-    0x13 => "Siren Low Battery",
-    0x14 => "Siren AC Fail",
-);
+
 $stateFlags = array(
     1 => "Klaar om in te schakelen",
     2 => "Alert in geheugen",
@@ -89,7 +67,7 @@ $stateFlags = array(
     128 => "Alarm!",
 );
 
-trait InstanceStatus
+trait InstanceStatusVisonic
 {
     /**
      * Ermittelt den Parent und verwaltet die Einträge des Parent im MessageSink
@@ -117,12 +95,12 @@ trait InstanceStatus
      * Prüft vorher noch ob sich dieser vom aktuellen Status unterscheidet.
      *
      * @access protected
-     * @param int $InstanceStatus
+     * @param int $InstanceStatusVisonic
      */
-    protected function _SetStatus($InstanceStatus)
+    protected function _SetStatus($InstanceStatusVisonic)
     {
-        if ($InstanceStatus != IPS_GetInstance($this->InstanceID)['InstanceStatus']) {
-            parent::SetStatus($InstanceStatus);
+        if ($InstanceStatusVisonic != IPS_GetInstance($this->InstanceID)['InstanceStatus']) {
+            parent::SetStatus($InstanceStatusVisonic);
         }
     }
     /**
@@ -153,7 +131,7 @@ trait InstanceStatus
 class VisonicAlarmDevice extends IPSModule
 {
     use
-        InstanceStatus;
+        InstanceStatusVisonic;
 
     public $Parent;
     public $ParentID;
@@ -363,15 +341,18 @@ class VisonicAlarmDevice extends IPSModule
                 case "zonealarm":
                     $int = $dt["flag"];
                     $z = $dt["id"];
+                    $id = @IPS_GetObjectIDByIdent("VisonicZones", $this->InstanceID);
+                    $sid = @IPS_GetObjectIDByIdent("VisonicZone" . $z, $id);
+                    $zone = @IPS_GetObject($sid);
+                    global $zoneEventType;
+                    IPS_LogMessage("Visonic DEBUG", "Zone alarm!! (" . $zone["ObjectName"] . " ($z), status: " . $zoneEventType($dt["status"]) . " (" . $dt["status"] . "), flag:" . dechex($int));
 
-                    if (($int & 128) == 128) {
+                    if (($int&128) == 128) {
                         if ($this->alarm == false) {
                             $this->alarm = true;
-                            IPS_LogMessage("Visonic DEBUG", "ALARM GAAT AF!!");
-                            $id = @IPS_GetObjectIDByIdent("VisonicZones", $this->InstanceID);
-                            $sid = @IPS_GetObjectIDByIdent("VisonicZone" . $z, $id);
-                            $zone = @IPS_GetObject($sid);
-                            $this->sendPushoverMessage("<b>Alarm gaat af!!!</b>Alarm in zone " . $zone["ObjectName"] . " ($z)!!", 2, "siren");
+
+                            IPS_LogMessage("Visonic DEBUG", "ALARM GAAT AF!! (" . $zone["ObjectName"] . " ($z), status: " . $zoneEventType($dt["status"]) . " (" . $dt["status"] . ")");
+                            $this->sendPushoverMessage("<b>Alarm gaat af!!!</b><br>Alarm in zone " . $zone["ObjectName"] . " ($z)!!<br>, status: " . $zoneEventType($dt["status"]) . " (" . $dt["status"] . ")", 2, "siren");
                         }
                     } else {
                         $this->alarm = false;
@@ -392,7 +373,7 @@ class VisonicAlarmDevice extends IPSModule
                         $str = "";
                         $first = true;
                         foreach ($stateFlags as $i => $v) {
-                            if (($int & $i) == $i) {
+                            if (($int&$i) == $i) {
                                 if (!$first) {
                                     $str .= " | ";
                                 }
@@ -586,6 +567,7 @@ class VisonicAlarmDevice extends IPSModule
         curl_setopt_array($ch = curl_init(), array(
             CURLOPT_URL => "https://api.pushover.net/1/messages.json",
             CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POSTFIELDS => array(
                 "token" => $this->__progtoken,
                 "user" => $this->__usertoken,
