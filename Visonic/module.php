@@ -16,57 +16,6 @@ if (@constant('IPS_BASE') == null) { //Nur wenn Konstanten noch nicht bekannt si
     define('VM_CHANGEPROFILEACTION', IPS_VARIABLEMESSAGE + 5); //On Profile Action Change
 }
 
-$zoneEventType = array(
-    0x00 => "None",
-    0x01 => "Tamper Alarm",
-    0x02 => "Tamper Restore",
-    0x03 => "Open",
-    0x04 => "Closed",
-    0x05 => "Violated (Motion)",
-    0x06 => "Panic Alarm",
-    0x07 => "RF Jamming",
-    0x08 => "Tamper Open",
-    0x09 => "Communication Failure",
-    0x0A => "Line Failure",
-    0x0B => "Fuse",
-    0x0C => "Not Active",
-    0x0D => "Low Battery",
-    0x0E => "AC Failure",
-    0x0F => "Fire Alarm",
-    0x10 => "Emergency",
-    0x11 => "Siren Tamper",
-    0x12 => "Siren Tamper Restore",
-    0x13 => "Siren Low Battery",
-    0x14 => "Siren AC Fail");
-
-$systemState = array(
-    0x00 => "Uitgeschakeld",
-    0x01 => "Exit Delay",
-    0x02 => "Exit Delay",
-    0x03 => "Entry Delay",
-    0x04 => "Ingeschakeld (Thuis)",
-    0x05 => "Ingeschakeld (Volledig)",
-    0x06 => "User Test",
-    0x07 => "Downloading",
-    0x08 => "Programming",
-    0x09 => "Installer",
-    0x0A => "Home Bypass",
-    0x0B => "Away Bypass",
-    0x0C => "Ready",
-    0x0D => "Not Ready",
-);
-
-$stateFlags = array(
-    1 => "Klaar om in te schakelen",
-    2 => "Alert in geheugen",
-    4 => "Probleem",
-    8 => "Bypass On",
-    16 => "Last 10 seconds of entry or exit delay",
-    32 => "Zone event",
-    64 => "Arm, disarm event",
-    128 => "Alarm!",
-);
-
 trait InstanceStatusVisonic
 {
     /**
@@ -133,6 +82,59 @@ class VisonicAlarmDevice extends IPSModule
     use
         InstanceStatusVisonic;
 
+
+$zoneEventType = array(
+    0x00 => "None",
+    0x01 => "Tamper Alarm",
+    0x02 => "Tamper Restore",
+    0x03 => "Open",
+    0x04 => "Closed",
+    0x05 => "Violated (Motion)",
+    0x06 => "Panic Alarm",
+    0x07 => "RF Jamming",
+    0x08 => "Tamper Open",
+    0x09 => "Communication Failure",
+    0x0A => "Line Failure",
+    0x0B => "Fuse",
+    0x0C => "Not Active",
+    0x0D => "Low Battery",
+    0x0E => "AC Failure",
+    0x0F => "Fire Alarm",
+    0x10 => "Emergency",
+    0x11 => "Siren Tamper",
+    0x12 => "Siren Tamper Restore",
+    0x13 => "Siren Low Battery",
+    0x14 => "Siren AC Fail");
+
+$systemState = array(
+    0x00 => "Uitgeschakeld",
+    0x01 => "Exit Delay",
+    0x02 => "Exit Delay",
+    0x03 => "Entry Delay",
+    0x04 => "Ingeschakeld (Thuis)",
+    0x05 => "Ingeschakeld (Volledig)",
+    0x06 => "User Test",
+    0x07 => "Downloading",
+    0x08 => "Programming",
+    0x09 => "Installer",
+    0x0A => "Home Bypass",
+    0x0B => "Away Bypass",
+    0x0C => "Ready",
+    0x0D => "Not Ready",
+);
+
+$stateFlags = array(
+    1 => "Klaar om in te schakelen",
+    2 => "Alert in geheugen",
+    4 => "Probleem",
+    8 => "Bypass On",
+    16 => "Last 10 seconds of entry or exit delay",
+    32 => "Zone event",
+    64 => "Arm, disarm event",
+    128 => "Alarm!",
+);
+
+
     public $Parent;
     public $ParentID;
     public $status = 0;
@@ -185,8 +187,8 @@ class VisonicAlarmDevice extends IPSModule
         }
         if (!IPS_VariableProfileExists("VisonicZoneProfile")) {
             IPS_CreateVariableProfile("VisonicZoneProfile", 1);
-            global $zoneEventType;
-            foreach ($zoneEventType as $key => $value) {
+            
+            foreach ($this->zoneEventType as $key => $value) {
                 IPS_SetVariableProfileAssociation("VisonicZoneProfile", $key, $value, "", -1);
             }
         }
@@ -318,16 +320,16 @@ class VisonicAlarmDevice extends IPSModule
 
                     break;
                 case "state":
-                    $sid = @IPS_GetObjectIDByIdent("VisonicStatus", $this->InstanceID);
+                    //$sid = @IPS_GetObjectIDByIdent("VisonicStatus", $this->InstanceID);
                     $this->status = $dt["data"];
-                    if ($sid) {
-                        SetValue($sid, $dt["data"]);
-                    }
+                    //if ($sid) {
+                        $this->SetValue("VisonicStatus", $dt["data"]);
+                    //}
                     if ($dt["data"] == 0 || $dt["data"] == 4 || $dt["data"] == 5) {
-                        $sid = @IPS_GetObjectIDByIdent("VisonicControl", $this->InstanceID);
-                        if ($sid) {
-                            SetValue($sid, $dt["data"]);
-                        }
+                        //$sid = @IPS_GetObjectIDByIdent("VisonicControl", $this->InstanceID);
+                        //if ($sid) {
+                            SetValue("VisonicControl", $dt["data"]);
+                        //}
                     }
                     if ($this->__debug) {
                         IPS_LogMessage("Visonic DEBUG", "State " . $dt["data"]);
@@ -344,15 +346,15 @@ class VisonicAlarmDevice extends IPSModule
                     $id = @IPS_GetObjectIDByIdent("VisonicZones", $this->InstanceID);
                     $sid = @IPS_GetObjectIDByIdent("VisonicZone" . $z, $id);
                     $zone = @IPS_GetObject($sid);
-                    global $zoneEventType;
-                    IPS_LogMessage("Visonic DEBUG", "Zone alarm!! (" . $zone["ObjectName"] . " ($z), status: " . $zoneEventType($dt["status"]) . " (" . $dt["status"] . "), flag:" . dechex($int));
+                    //global $zoneEventType;
+                    IPS_LogMessage("Visonic DEBUG", "Zone alarm!! (" . $zone["ObjectName"] . " ($z), status: " . $this->zoneEventType($dt["status"]) . " (" . $dt["status"] . "), flag:" . dechex($int));
 
                     if (($int&128) == 128) {
                         if ($this->alarm == false) {
                             $this->alarm = true;
 
-                            IPS_LogMessage("Visonic DEBUG", "ALARM GAAT AF!! (" . $zone["ObjectName"] . " ($z), status: " . $zoneEventType($dt["status"]) . " (" . $dt["status"] . ")");
-                            $this->sendPushoverMessage("<b>Alarm gaat af!!!</b><br>Alarm in zone " . $zone["ObjectName"] . " ($z)!!<br>, status: " . $zoneEventType($dt["status"]) . " (" . $dt["status"] . ")", 2, "siren");
+                            IPS_LogMessage("Visonic DEBUG", "ALARM GAAT AF!! (" . $zone["ObjectName"] . " ($z), status: " . $this->zoneEventType($dt["status"]) . " (" . $dt["status"] . ")");
+                            $this->sendPushoverMessage("<b>Alarm gaat af!!!</b><br>Alarm in zone " . $zone["ObjectName"] . " ($z)!!<br>, status: " . $this->zoneEventType($dt["status"]) . " (" . $dt["status"] . ")", 2, "siren");
                         }
                     } else {
                         $this->alarm = false;
@@ -367,23 +369,23 @@ class VisonicAlarmDevice extends IPSModule
 
                     $int = $dt["data"];
 
-                    $sid = @IPS_GetObjectIDByIdent("VisonicFlag", $this->InstanceID);
-                    if ($sid) {
-                        global $stateFlags;
+                  //  $sid = @IPS_GetObjectIDByIdent("VisonicFlag", $this->InstanceID);
+                   // if ($sid) {
+                       // global $stateFlags;
                         $str = "";
                         $first = true;
-                        foreach ($stateFlags as $i => $v) {
+                        foreach ($this->stateFlags as $i => $v) {
                             if (($int&$i) == $i) {
                                 if (!$first) {
                                     $str .= " | ";
                                 }
 
-                                $str .= $stateFlags[$i];
+                                $str .= $this->stateFlags[$i];
                                 $first = false;
                             }
                         }
-                        SetValue($sid, $str);
-                    }
+                        $this->SetValue("VisonicFlag", $str);
+                    //}
                     break;
                 case "zonestatus":
 
@@ -409,7 +411,7 @@ class VisonicAlarmDevice extends IPSModule
                             }
 
                             if ($b != $dt["status"]) {
-                                SetValue($sid, $dt["status"]);
+                                $this->SetValue("VisonicZone". $dt["id"], $dt["status"]);
                             }
                         }
                     } elseif (isset($dt["battery"])) {
@@ -431,7 +433,7 @@ class VisonicAlarmDevice extends IPSModule
                             }
 
                             if ($b != $dt["battery"]) {
-                                SetValue($sid, $dt["battery"]);
+                                $this->SetValue("VisonicZoneBattery" . $dt["id"], $dt["battery"]);
                                 if ($dt["battery"] > 0) {
                                     $z = $dt["id"];
 
