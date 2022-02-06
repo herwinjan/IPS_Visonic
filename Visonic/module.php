@@ -412,7 +412,7 @@ class VisonicAlarmDevice extends IPSModule
                             }
 
                             if ($b != $dt["status"]) {
-                                $this->SetValue("VisonicZone" . $dt["id"], $dt["status"]);
+                                SetValue($sid, $dt["status"]);
                             }
                         }
                     } elseif (isset($dt["battery"])) {
@@ -434,7 +434,7 @@ class VisonicAlarmDevice extends IPSModule
                             }
 
                             if ($b != $dt["battery"]) {
-                                $this->SetValue("VisonicZoneBattery" . $dt["id"], $dt["battery"]);
+                                SetValue($sid, $dt["battery"]);
                                 if ($dt["battery"] > 0) {
                                     $z = $dt["id"];
 
