@@ -326,7 +326,9 @@ class VisonicAlarmDevice extends IPSModule
                     if ($dt["data"] == 0 || $dt["data"] == 4 || $dt["data"] == 5) {
                         //$sid = @IPS_GetObjectIDByIdent("VisonicControl", $this->InstanceID);
                         //if ($sid) {
-                        SetValue("VisonicControl", $dt["data"]);
+                        $this->SendDebug('Visonic DEBUG', $dt["data"], 0);
+                        //IPS_LogMessage("Visonic DEBUG", "State " . $dt["data"]);
+                        $this->SetValue("VisonicControl", $dt["data"]);
                         //}
                     }
                     if ($this->__debug) {
