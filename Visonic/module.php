@@ -82,58 +82,56 @@ class VisonicAlarmDevice extends IPSModule
     use
         InstanceStatusVisonic;
 
+    private $zoneEventType = array(
+        0x00 => "None",
+        0x01 => "Tamper Alarm",
+        0x02 => "Tamper Restore",
+        0x03 => "Open",
+        0x04 => "Closed",
+        0x05 => "Violated (Motion)",
+        0x06 => "Panic Alarm",
+        0x07 => "RF Jamming",
+        0x08 => "Tamper Open",
+        0x09 => "Communication Failure",
+        0x0A => "Line Failure",
+        0x0B => "Fuse",
+        0x0C => "Not Active",
+        0x0D => "Low Battery",
+        0x0E => "AC Failure",
+        0x0F => "Fire Alarm",
+        0x10 => "Emergency",
+        0x11 => "Siren Tamper",
+        0x12 => "Siren Tamper Restore",
+        0x13 => "Siren Low Battery",
+        0x14 => "Siren AC Fail");
 
-$zoneEventType = array(
-    0x00 => "None",
-    0x01 => "Tamper Alarm",
-    0x02 => "Tamper Restore",
-    0x03 => "Open",
-    0x04 => "Closed",
-    0x05 => "Violated (Motion)",
-    0x06 => "Panic Alarm",
-    0x07 => "RF Jamming",
-    0x08 => "Tamper Open",
-    0x09 => "Communication Failure",
-    0x0A => "Line Failure",
-    0x0B => "Fuse",
-    0x0C => "Not Active",
-    0x0D => "Low Battery",
-    0x0E => "AC Failure",
-    0x0F => "Fire Alarm",
-    0x10 => "Emergency",
-    0x11 => "Siren Tamper",
-    0x12 => "Siren Tamper Restore",
-    0x13 => "Siren Low Battery",
-    0x14 => "Siren AC Fail");
+    private $systemState = array(
+        0x00 => "Uitgeschakeld",
+        0x01 => "Exit Delay",
+        0x02 => "Exit Delay",
+        0x03 => "Entry Delay",
+        0x04 => "Ingeschakeld (Thuis)",
+        0x05 => "Ingeschakeld (Volledig)",
+        0x06 => "User Test",
+        0x07 => "Downloading",
+        0x08 => "Programming",
+        0x09 => "Installer",
+        0x0A => "Home Bypass",
+        0x0B => "Away Bypass",
+        0x0C => "Ready",
+        0x0D => "Not Ready",
+    );
 
-$systemState = array(
-    0x00 => "Uitgeschakeld",
-    0x01 => "Exit Delay",
-    0x02 => "Exit Delay",
-    0x03 => "Entry Delay",
-    0x04 => "Ingeschakeld (Thuis)",
-    0x05 => "Ingeschakeld (Volledig)",
-    0x06 => "User Test",
-    0x07 => "Downloading",
-    0x08 => "Programming",
-    0x09 => "Installer",
-    0x0A => "Home Bypass",
-    0x0B => "Away Bypass",
-    0x0C => "Ready",
-    0x0D => "Not Ready",
-);
-
-$stateFlags = array(
-    1 => "Klaar om in te schakelen",
-    2 => "Alert in geheugen",
-    4 => "Probleem",
-    8 => "Bypass On",
-    16 => "Last 10 seconds of entry or exit delay",
-    32 => "Zone event",
-    64 => "Arm, disarm event",
-    128 => "Alarm!",
-);
-
+    private $stateFlags = array(
+        1 => "Klaar om in te schakelen",
+        2 => "Alert in geheugen",
+        4 => "Probleem",
+        8 => "Bypass On",
+        16 => "Last 10 seconds of entry or exit delay",
+        32 => "Zone event",
+        64 => "Arm, disarm event",
+        128 => "Alarm!",
+    );
 
     public $Parent;
     public $ParentID;
@@ -187,7 +185,7 @@ $stateFlags = array(
         }
         if (!IPS_VariableProfileExists("VisonicZoneProfile")) {
             IPS_CreateVariableProfile("VisonicZoneProfile", 1);
-            
+
             foreach ($this->zoneEventType as $key => $value) {
                 IPS_SetVariableProfileAssociation("VisonicZoneProfile", $key, $value, "", -1);
             }
@@ -323,12 +321,12 @@ $stateFlags = array(
                     //$sid = @IPS_GetObjectIDByIdent("VisonicStatus", $this->InstanceID);
                     $this->status = $dt["data"];
                     //if ($sid) {
-                        $this->SetValue("VisonicStatus", $dt["data"]);
+                    $this->SetValue("VisonicStatus", $dt["data"]);
                     //}
                     if ($dt["data"] == 0 || $dt["data"] == 4 || $dt["data"] == 5) {
                         //$sid = @IPS_GetObjectIDByIdent("VisonicControl", $this->InstanceID);
                         //if ($sid) {
-                            SetValue("VisonicControl", $dt["data"]);
+                        SetValue("VisonicControl", $dt["data"]);
                         //}
                     }
                     if ($this->__debug) {
@@ -369,22 +367,22 @@ $stateFlags = array(
 
                     $int = $dt["data"];
 
-                  //  $sid = @IPS_GetObjectIDByIdent("VisonicFlag", $this->InstanceID);
-                   // if ($sid) {
-                       // global $stateFlags;
-                        $str = "";
-                        $first = true;
-                        foreach ($this->stateFlags as $i => $v) {
-                            if (($int&$i) == $i) {
-                                if (!$first) {
-                                    $str .= " | ";
-                                }
-
-                                $str .= $this->stateFlags[$i];
-                                $first = false;
+                    //  $sid = @IPS_GetObjectIDByIdent("VisonicFlag", $this->InstanceID);
+                    // if ($sid) {
+                    // global $stateFlags;
+                    $str = "";
+                    $first = true;
+                    foreach ($this->stateFlags as $i => $v) {
+                        if (($int&$i) == $i) {
+                            if (!$first) {
+                                $str .= " | ";
                             }
+
+                            $str .= $this->stateFlags[$i];
+                            $first = false;
                         }
-                        $this->SetValue("VisonicFlag", $str);
+                    }
+                    $this->SetValue("VisonicFlag", $str);
                     //}
                     break;
                 case "zonestatus":
@@ -411,7 +409,7 @@ $stateFlags = array(
                             }
 
                             if ($b != $dt["status"]) {
-                                $this->SetValue("VisonicZone". $dt["id"], $dt["status"]);
+                                $this->SetValue("VisonicZone" . $dt["id"], $dt["status"]);
                             }
                         }
                     } elseif (isset($dt["battery"])) {
