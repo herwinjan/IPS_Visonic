@@ -147,21 +147,16 @@ class VisonicAlarmDevice extends IPSModule
     // Overrides the default constructor of IPS
     public function __construct($InstanceID)
     {
-        // Do not delete this row
         parent::__construct($InstanceID);
 
-        // Self-service code
     }
 
-    // Overrides the internal IPS_Create ($ id) function
     public function Create()
     {
-        // Do not delete this row.
         parent::Create();
 
         $this->RequireParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
         $this->ConnectParent("{3AB77A94-3467-4E66-8A73-840B4AD89582}");
-        // $this->RegisterMessage(0, 'DM_CONNECT');
         $this->RegisterMessage(0, 10503);
         $this->RegisterMessage(0, 10504);
         $this->RegisterMessage(0, 11101);
@@ -257,7 +252,7 @@ class VisonicAlarmDevice extends IPSModule
 
     public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
     {
-        //            $this->__debug(__FUNCTION__,"entered");
+
         $id = $SenderID;
         if ($this->__debug) {
             IPS_LogMessage("Visonic DEBUG", "TS: $TimeStamp SenderID " . $SenderID . " with MessageID " . $Message . " Data: " . print_r($Data, true));
@@ -318,19 +313,11 @@ class VisonicAlarmDevice extends IPSModule
 
                     break;
                 case "state":
-                    //$sid = @IPS_GetObjectIDByIdent("VisonicStatus", $this->InstanceID);
                     $this->status = $dt["data"];
-                    //if ($sid) {
                     $this->SetValue("VisonicStatus", $dt["data"]);
-                    //}
                     if ($dt["data"] == 0 || $dt["data"] == 4 || $dt["data"] == 5) {
-                        //$sid = @IPS_GetObjectIDByIdent("VisonicControl", $this->InstanceID);
-                        //if ($sid) {
-                        //$this->SendDebug('Visonic DEBUG', $dt["data"], 0);
-                        IPS_LogMessage("Visonic DEBUG", "State " . $dt["data"]);
-                        //IPS_LogMessage("Visonic DEBUG", "State " . $dt["data"]);
+
                         $this->SetValue("VisonicControl", $dt["data"]);
-                        //}
                     }
                     if ($this->__debug) {
                         IPS_LogMessage("Visonic DEBUG", "State " . $dt["data"]);
@@ -347,7 +334,7 @@ class VisonicAlarmDevice extends IPSModule
                     $id = @IPS_GetObjectIDByIdent("VisonicZones", $this->InstanceID);
                     $sid = @IPS_GetObjectIDByIdent("VisonicZone" . $z, $id);
                     $zone = @IPS_GetObject($sid);
-                    //global $zoneEventType;
+
                     IPS_LogMessage("Visonic DEBUG", "Zone alarm!! (" . $zone["ObjectName"] . " ($z), status: " . $this->zoneEventType($dt["status"]) . " (" . $dt["status"] . "), flag:" . dechex($int));
 
                     if (($int&128) == 128) {
@@ -370,9 +357,6 @@ class VisonicAlarmDevice extends IPSModule
 
                     $int = $dt["data"];
 
-                    //  $sid = @IPS_GetObjectIDByIdent("VisonicFlag", $this->InstanceID);
-                    // if ($sid) {
-                    // global $stateFlags;
                     $str = "";
                     $first = true;
                     foreach ($this->stateFlags as $i => $v) {
@@ -386,7 +370,6 @@ class VisonicAlarmDevice extends IPSModule
                         }
                     }
                     $this->SetValue("VisonicFlag", $str);
-                    //}
                     break;
                 case "zonestatus":
 
