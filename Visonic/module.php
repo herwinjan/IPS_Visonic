@@ -335,14 +335,14 @@ class VisonicAlarmDevice extends IPSModule
                     $sid = @IPS_GetObjectIDByIdent("VisonicZone" . $z, $id);
                     $zone = @IPS_GetObject($sid);
 
-                    IPS_LogMessage("Visonic DEBUG", "Zone alarm!! (" . $zone["ObjectName"] . " ($z), status: " . $this->zoneEventType($dt["status"]) . " (" . $dt["status"] . "), flag:" . dechex($int));
+                    IPS_LogMessage("Visonic DEBUG", "Zone alarm!! (" . $zone["ObjectName"] . " ($z), status: " . $this->zoneEventType[$dt["status"]] . " (" . $dt["status"] . "), flag:" . dechex($int));
 
                     if (($int&128) == 128) {
                         if ($this->alarm == false) {
                             $this->alarm = true;
 
-                            IPS_LogMessage("Visonic DEBUG", "ALARM GAAT AF!! (" . $zone["ObjectName"] . " ($z), status: " . $this->zoneEventType($dt["status"]) . " (" . $dt["status"] . ")");
-                            $this->sendPushoverMessage("<b>Alarm gaat af!!!</b><br>Alarm in zone " . $zone["ObjectName"] . " ($z)!!<br>, status: " . $this->zoneEventType($dt["status"]) . " (" . $dt["status"] . ")", 2, "siren");
+                            IPS_LogMessage("Visonic DEBUG", "ALARM GAAT AF!! (" . $zone["ObjectName"] . " ($z), status: " . $this->zoneEventType[$dt["status"]] . " (" . $dt["status"] . ")");
+                            $this->sendPushoverMessage("<b>Alarm gaat af!!!</b><br>Alarm in zone " . $zone["ObjectName"] . " ($z)!!<br>, status: " . $this->zoneEventType[$dt["status"]] . " (" . $dt["status"] . ")", 2, "siren");
                         }
                     } else {
                         $this->alarm = false;
